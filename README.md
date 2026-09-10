@@ -57,33 +57,33 @@ LICENSE                                    MIT for the skill text; Apple content
 
 ## Install
 
-Replace `<owner>/<repo>` with this repository's GitHub path.
+Replace `bahimzabir/iphone-duo-adaptive-ui` with this repository's GitHub path.
 
 **Any agent — Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline, and 70+ more** (uses the [`skills`](https://github.com/vercel-labs/skills) CLI, follows the [Agent Skills](https://agentskills.io) spec):
 
 ```bash
 # interactive: pick agents, project or global scope
-npx skills add <owner>/<repo>
+npx skills add bahimzabir/iphone-duo-adaptive-ui
 
 # non-interactive, global, Claude Code only
-npx skills add <owner>/<repo> --skill iphone-duo-adaptive-ui -g -a claude-code -y
+npx skills add bahimzabir/iphone-duo-adaptive-ui --skill iphone-duo-adaptive-ui -g -a claude-code -y
 
 # see what the repo offers without installing
-npx skills add <owner>/<repo> --list
+npx skills add bahimzabir/iphone-duo-adaptive-ui --list
 ```
 
 **Claude Code, as a plugin** (this repo is its own marketplace):
 
 ```
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add bahimzabir/iphone-duo-adaptive-ui
 /plugin install iphone-duo-adaptive-ui@ios-skills
 ```
 
 **Manual** (any agent that reads `SKILL.md` folders):
 
 ```bash
-git clone https://github.com/<owner>/<repo>.git
-ln -s "$(pwd)/<repo>/skills/iphone-duo-adaptive-ui" ~/.claude/skills/iphone-duo-adaptive-ui   # or .claude/skills/ inside a project
+git clone https://github.com/bahimzabir/iphone-duo-adaptive-ui.git
+ln -s "$(pwd)/iphone-duo-adaptive-ui/skills/iphone-duo-adaptive-ui" ~/.claude/skills/iphone-duo-adaptive-ui   # or .claude/skills/ inside a project
 ```
 
 **claude.ai**: zip the `skills/iphone-duo-adaptive-ui` folder and upload it under Settings → Features (Pro, Max, Team, Enterprise with code execution enabled).
