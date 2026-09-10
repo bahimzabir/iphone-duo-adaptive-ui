@@ -1,0 +1,7 @@
+{
+  "name": "iphone-duo-adaptive-ui",
+  "description": "Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone. Grounded only in Apple's HIG and September 2026 Tech Talks; flags what Apple has not documented.",
+  "version": "0.1.0",
+  "author": { "name": "Abderrahim" },
+  "keywords": ["iphone-duo", "foldable", "ios", "swiftui", "uikit", "adaptive-layout", "size-classes"]
+}
