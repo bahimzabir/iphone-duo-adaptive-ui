@@ -3,6 +3,7 @@
 An Agent Skill that teaches AI coding agents how to build and review SwiftUI and UIKit interfaces for **iPhone Duo**, Apple's folding iPhone (announced September 2026, iOS 27.1).
 
 > ## ⚠️ Early release — Apple has not shipped the full docs or SDK yet
+
 >
 > This skill was assembled on **2026-09-10**, one day after Apple published the iPhone Duo Human Interface Guidelines page and six Tech Talks, and **before** the tooling and reference documentation were available. As of that date:
 >
