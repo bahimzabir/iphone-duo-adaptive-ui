@@ -57,7 +57,7 @@ LICENSE                                    MIT for the skill text; Apple content
 
 ## Install
 
-Replace `bahimzabir/iphone-duo-adaptive-ui` with this repository's GitHub path.
+Repository: https://github.com/bahimzabir/iphone-duo-adaptive-ui
 
 **Any agent — Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline, and 70+ more** (uses the [`skills`](https://github.com/vercel-labs/skills) CLI, follows the [Agent Skills](https://agentskills.io) spec):
 
