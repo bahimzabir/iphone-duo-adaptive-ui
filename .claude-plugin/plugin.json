@@ -1,7 +1,15 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "iphone-duo-adaptive-ui",
-  "description": "Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone. Grounded only in Apple's HIG and September 2026 Tech Talks; flags what Apple has not documented.",
+  "displayName": "iPhone Duo Adaptive UI",
   "version": "0.1.0",
-  "author": { "name": "Abderrahim" },
-  "keywords": ["iphone-duo", "foldable", "ios", "swiftui", "uikit", "adaptive-layout", "size-classes"]
+  "description": "Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone. Grounded only in Apple's Human Interface Guidelines and September 2026 Tech Talks; flags what Apple has not documented instead of guessing.",
+  "author": {
+    "name": "Abderrahim",
+    "url": "https://github.com/bahimzabir"
+  },
+  "homepage": "https://github.com/bahimzabir/iphone-duo-adaptive-ui#readme",
+  "repository": "https://github.com/bahimzabir/iphone-duo-adaptive-ui",
+  "license": "MIT",
+  "keywords": ["iphone-duo", "foldable", "ios", "swiftui", "uikit", "adaptive-layout", "size-classes", "apple-hig"]
 }
