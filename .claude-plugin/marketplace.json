@@ -1,7 +1,7 @@
 {
   "name": "ios-skills",
   "description": "Agent Skills for iOS development, grounded only in Apple's official documentation.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "owner": {
     "name": "Abderrahim",
     "url": "https://github.com/bahimzabir"
@@ -12,7 +12,7 @@
       "displayName": "iPhone Duo Adaptive UI",
       "source": "./",
       "description": "Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone. Grounded only in Apple's Human Interface Guidelines and September 2026 Tech Talks; flags what Apple has not documented instead of guessing.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": { "name": "Abderrahim", "url": "https://github.com/bahimzabir" },
       "homepage": "https://github.com/bahimzabir/iphone-duo-adaptive-ui#readme",
       "repository": "https://github.com/bahimzabir/iphone-duo-adaptive-ui",

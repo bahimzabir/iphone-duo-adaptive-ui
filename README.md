@@ -2,32 +2,25 @@
 
 An Agent Skill that teaches AI coding agents how to build and review SwiftUI and UIKit interfaces for **iPhone Duo**, Apple's folding iPhone (announced September 2026, iOS 27.1).
 
-> ## ⚠️ Early release — Apple has not shipped the full docs or SDK yet
-
+> ## ⚠️ Beta-stage guidance — Apple's docs are published, the SDK is beta
 >
-> This skill was assembled on **2026-09-10**, one day after Apple published the iPhone Duo Human Interface Guidelines page and six Tech Talks, and **before** the tooling and reference documentation were available. As of that date:
+> **v0.2.0 (2026-09-22).** First assembled on 2026-09-10, one day after Apple published the iPhone Duo HIG page and six Tech Talks, when no SDK and no API reference existed. Re-verified on 2026-09-22 after Apple shipped **Xcode 27.1 beta** (developer email of 2026-09-18) and published the article **"Preparing your app for iPhone Duo"** plus the DocC reference pages. Current state:
 >
-> - **Xcode 27.1 beta and the iOS 27.1 SDK were not released.** Apple's "Get Ready for iPhone Duo" page listed them as "Coming later this month." None of the code in this skill has been compiled against a shipping SDK.
-> - **Apple's documentation article "Preparing your app for iPhone Duo" was not published** (also "Coming later this month").
-> - **No DocC reference pages exist for the new iOS 27.1 APIs.** `ArrangementView`, `UIArrangementViewController`, `reservedRegions`, `toolbarVerticalBehavior`, `axisBehavior`, `toolbarVerticalEdge`, `onHingeChange`, `UIHingeInteraction`, scene accessories, `CameraCaptureAccessory`, `AVCaptureDeviceDirectionCoordinator` and others returned HTTP 404. Their spellings come **only** from Apple's Tech Talk sample code and narration and may change before release.
-> - **No iPhone Duo simulator was available**, so nothing here has been visually verified in Device Hub.
-> - **Apple has not published point dimensions, display scale factor, vertical-bar width, hinge angle thresholds, or safe-area values.** The skill lists these as "not documented" and instructs agents to ask rather than guess.
->
-> What this means for you:
->
-> 1. Treat every iOS 27.1 symbol as **pre-release**. `skills/iphone-duo-adaptive-ui/references/api-index.md` marks each one with its source, timestamp, and DocC status so you can re-check it.
-> 2. Expect to **re-validate the whole skill** once Xcode 27.1 ships. The "Maintenance" section below lists what to re-fetch.
-> 3. Design guidance (size classes, vertical bars, displacement, split vs overlay, safe-area asymmetry) comes from the HIG page and Apple designers' talks and is unlikely to change; API spellings are the part most likely to move.
-> 4. If a task needs a number Apple has not published, **stop and ask** — the skill's ground rules forbid inventing one.
+> - **Published and incorporated:** the article (full text in `references/`), DocC pages for `ArrangementView`, `UIArrangementViewController`, `ReservedRegion` / `UIView.ReservedRegion`, `toolbarVerticalBehavior`, `toolbarVerticalEdge`, compression behaviors, `axisBehavior`, `presentationPlacement`, `UIHinge` / `UIHingeInteraction`, scene accessories, `AVCaptureDeviceDirectionCoordinator`, and the Xcode 27.1 beta release notes. All carry availability **iOS 27.1 beta**.
+> - **Still unpublished:** the SwiftUI `onHingeChange` modifier, `UIBarButtonItem.badge`, iOS 27.1 release notes. These remain Tech-Talk-only and are marked as such in `references/api-index.md`.
+> - **Still not stated by Apple anywhere:** point dimensions, display scale factor, vertical-bar width, hinge angle thresholds, safe-area values. The skill lists these as "not documented" and instructs agents to ask rather than guess.
+> - **Beta means names can move.** Re-run the Maintenance steps when iOS 27.1 goes GA.
+> - **Nothing here has been run on hardware.** Sample code is Apple's, reproduced verbatim; the iPhone Duo Simulator has known gaps (slow first launch, no StandBy, most app extensions unavailable).
 
 ## What it is grounded in
 
-Only Apple sources, fetched 2026-09-10:
+Only Apple sources, fetched 2026-09-10 and re-verified 2026-09-22:
 
-- Human Interface Guidelines — *Designing for iPhone Duo* (new page dated September 9, 2026)
+- Human Interface Guidelines — *Designing for iPhone Duo* (new page dated September 9, 2026; unchanged as of September 22)
+- Technology Overviews — *Preparing your app for iPhone Duo* (published September 2026)
+- DocC reference pages for the iOS 27.1 beta APIs and the Xcode 27.1 Beta Release Notes
 - Human Interface Guidelines — *Layout* (size classes, safe areas)
 - Six Apple Tech Talks: *Design for iPhone Duo*, *Prepare your app for iPhone Duo*, *Raise the bar with iPhone Duo*, *Strike a pose with adaptive layouts on iPhone Duo*, *Leverage multiple displays and scenes on iPhone Duo*, *Build a great camera experience for iPhone Duo* (chapter summaries, on-page sample code, and English subtitle transcripts)
-- Existing DocC pages for toolbar priority / overflow APIs
 - apple.com tech specs (pixel resolution only, clearly labelled)
 
 Full list with URLs: `skills/iphone-duo-adaptive-ui/references/sources.md`.
@@ -45,6 +38,7 @@ skills/
     SKILL.md                               entry point: rules, fast facts, 10-step workflow, anti-patterns
     references/
       hig-designing-for-iphone-duo.md      Apple's HIG page, full text
+      apple-preparing-your-app-for-iphone-duo.md  Apple's developer article, full text
       device-facts.md                      anatomy, size classes, SDK gating, NOT-documented list
       design-principles.md                 displacement, consistency, outer/inner patterns, sheets, games
       vertical-bars-and-toolbars.md        side bars, item axis, overflow, priority, opt-out (+ code)

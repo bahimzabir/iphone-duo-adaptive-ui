@@ -1,6 +1,6 @@
 # Arrangement views and reserved regions (iOS 27.1)
 
-Sources: HIG-DUO "Dynamic layouts" (Reserved regions, Split views, Arrangement views); TT-POSE transcript and on-page sample code; TT-PREPARE. Code is Apple's, verbatim. **None of these APIs had a published DocC page on 2026-09-10**; treat names as pre-release and verify against the iOS 27.1 SDK before shipping. Provenance per symbol is in `api-index.md`.
+Sources: HIG-DUO "Dynamic layouts" (Reserved regions, Split views, Arrangement views); TT-POSE transcript and on-page sample code; TT-PREPARE; PREP (Apple's article, full text in `apple-preparing-your-app-for-iphone-duo.md`); DocC reference pages verified 2026-09-22 (availability **iOS 27.1 beta**). Code is Apple's, verbatim. Provenance per symbol is in `api-index.md`.
 
 ## Reserved regions — the concept (HIG-DUO)
 
@@ -69,7 +69,27 @@ GeometryReader { proxy in
 }
 ```
 
-Naming note: the code samples spell the call `reservedRegions(kind:)` / `reservedRegions(kind:options:)`; the spoken transcript says "reservedRegion method." TT-PREPARE names the types "ReservedRegion in SwiftUI" and "UIViewReservedRegion in UIKit." Prefer the code-sample spelling; confirm in the SDK.
+Confirmed signatures (DocC, 2026-09-22):
+
+- SwiftUI: `GeometryProxy.reservedRegions(kind: ReservedRegion.Kind, options: ReservedRegion.QueryOptions = [], layoutDirectionBehavior: LayoutDirectionBehavior = .mirrors) -> [ReservedRegion]`. The Tech Talk's `reservedRegions(kind:)` / `(kind:options:)` calls are this method with defaults.
+- UIKit: `UIView.reservedRegions(kind: UIView.ReservedRegion.Kind, options: UIView.ReservedRegion.QueryOptions = []) -> [UIView.ReservedRegion]`. Objective-C: `UIViewReservedRegion`, `reservedRegionsOfKind:options:`.
+- Region properties (both): `frame` — "The rect of the region in the view's coordinate space, including the margins"; `margins` — "The margins included in the frame around the rect for interactive content"; `isActive`; `kind` (`.occlusion` / `.division`); `id`.
+- Kinds per DocC: occlusion — "An area where an element, such as the Dynamic Island, a camera, or window controls, occludes content"; division — "An area where content splits into separate regions, such as at the fold of a hinge."
+- The method "returns all of the reserved regions that currently intersect your view regardless of whether they are currently active" (DocC wording); TT-POSE says only active ones return by default and `.includeInactive` adds the rest. Read `isActive` rather than relying on either statement.
+- **Right-to-left:** "Reserved regions are typically in a fixed coordinate space; the absolute location of a device's camera doesn't flip depending on a person's preferred language. By default, the system mirrors the geometry of these regions automatically before it provides them to SwiftUI APIs." Pass `layoutDirectionBehavior: .fixed` to get unmirrored frames.
+- DocC example (SwiftUI):
+
+```swift
+GeometryReader { proxy in
+    RegionAvoidingLayout(
+        regions: proxy.reservedRegions(kind: .occlusion)
+    ) {
+        ForEach(items) { item in
+            ItemView(item)
+        }
+    }
+}
+```
 
 When to adopt: "identify the highest priority manually laid-out controls in your views and consider adopting the ReservedRegions API to implement your own displacement where needed." (TT-POSE) Standard containers and presentations already handle the fold.
 
@@ -101,6 +121,15 @@ Two types (HIG-DUO):
 "You can limit which axes a split arrangement uses, and collapse the secondary view in an overlay arrangement when you don't want it to appear."
 
 Podcasts example (TT-POSE): when the transcript is hidden on a folded Duo, "the Now Playing view is not centered like it was on iPad. Instead, it stays constrained to the left region defined by the fold."
+
+## Arrangement views — what DocC adds (verified 2026-09-22)
+
+- SwiftUI `ArrangementView<Primary, Secondary>`: "computes a layout for its content based on the context it is presented in, including the available size, size class, and hardware features." Styles: `.automatic` (default; "resolves to a split arrangement"), `.split`, `.overlay`; custom styles conform to `ArrangementViewStyle` and implement `makeBody(configuration:)`.
+- Overlay per DocC: "layers the primary view on top of the secondary view in z-order... well-suited for full screen experiences like media players, where playback controls overlay a video surface." When folded it "can transition its views from a layered layout into a side-by-side layout"; restrict with `OverlayArrangementViewStyle.axes(_:)`.
+- PREP adds the fold placement rule: "When iPhone Duo is partially open, the overlay arrangement places the primary view in the trailing or bottom part of the display relative to the fold, and the secondary view in the leading or top part of the display relative to the fold."
+- Split per DocC: "places the primary and secondary views side by side along one or more axes... adapts its axis based on the available size and size class"; restrict with `SplitArrangementViewStyle.axes(_: Axis.Set)`.
+- UIKit `UIArrangementViewController`: `setViewController(_:for:)` with `.primary` / `.secondary`; `updateArrangement(_:animated:)` taking `UISplitArrangement` (default) or `UIOverlayArrangement`, both with `axes(_:)`; `UISplitArrangement.DimensionRange` gives "minimum, preferred, and maximum size for a view within a split arrangement"; `state(for:) -> ViewState?` exposes `zIndex`.
+- PREP's container warning is broader than the talk's: "Avoid placing an arrangement view inside a navigation split view, list, scroll view, or other container that might cause part of your view to become inaccessible."
 
 ## Arrangement views — the API (TT-POSE 11:17–14:21)
 

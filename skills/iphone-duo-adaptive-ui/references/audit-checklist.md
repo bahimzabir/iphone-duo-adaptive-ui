@@ -9,6 +9,16 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 - [ ] App has been tested in Split View multitasking on both the left and right side (vertical bar may be on either edge). [TT-PREPARE, "Respect safe areas" chapter, Device Hub drag test]
 - [ ] Xcode 27.1's App Resizability skill has been run, if available. [TT-PREPARE 9:12]
 
+## A2. Apple's own walkthrough (PREP "Address common layout and resizing considerations")
+
+- [ ] Checked "how your app appears on both displays, when closed, open, or partially folded" and rotated in each pose.
+- [ ] "Confirm your views resize well in each supported orientation and pose."
+- [ ] "Inspect how the system presents your app's navigation bars, toolbars, and tab bars vertically on the side of the display."
+- [ ] "Identify any views, sheets, or popovers that position awkwardly when you fold or open iPhone Duo."
+- [ ] "Identify elements or controls in your views that appear in the fold, and are difficult to see or interact with."
+- [ ] "Size your views relative to their container rather than to fixed iPhone dimensions." / "Make layout calculations based on your scene or containing view's bounds rather than screen dimensions."
+- [ ] UIKit: Auto Layout adopted; size-class changes observed via automatic trait tracking. [PREP; "Adapting your app when traits change"]
+
 ## B. Layout decisions
 
 - [ ] No layout decision keys off `userInterfaceIdiom`, interface orientation, or device model. Size classes only. [HIG-LAYOUT; TT-PREPARE 2:46]
@@ -42,6 +52,8 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 - [ ] Items that swap between symbol and text (custom Select/Done) use `.axisBehavior(.horizontalOnly)`. [TT-BARS 8:00]
 - [ ] Custom views that support a vertical layout opt in with `.axisBehavior(.verticalPreferred)` and fit the bar's fixed width. [TT-BARS 8:00, 10:07]
 - [ ] Custom bar views read `toolbarVerticalEdge` / `verticalBarEdge` if they need to adapt, and stay legible with Reduce Transparency on. [TT-BARS 10:07]
+- [ ] Hero/background images extend under the vertical bar with `backgroundExtensionEffect()` / `UIBackgroundExtensionView`. [PREP]
+- [ ] Sheets on the inner display use `presentationPlacement` / `preferredPlacement` deliberately (trailing = vertical bar; centered/leading = horizontal). [PREP]
 - [ ] Custom back/close uses `.cancellationAction` / leading item with `leftItemsSupplementBackButton = false`; prominent action uses `.topBarPinnedTrailing` / `pinnedTrailingGroup`. [TT-BARS 4:29]
 - [ ] Items are grouped with `ToolbarItemGroup` / `UIBarButtonItemGroup`; no manual spacers. [HIG-DUO]
 - [ ] Any app-specific overflow menu was folded into `ToolbarOverflowMenu` / `additionalOverflowItems`; the ellipsis is used only for overflow. [HIG-DUO; TT-BARS 11:40]
@@ -56,8 +68,8 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 - [ ] Centered layouts were audited: converted to two columns or given a displacement rule. [TT-POSE 16:34]
 - [ ] Grids prefer an even number of columns; spacing grows around the hinge while outer margins are preserved. [HIG-DUO; TT-POSE 5:12]
 - [ ] Two-view side-by-side or layered layouts (`HStack`/`VStack`/`ZStack`-style) use `ArrangementView` / `UIArrangementViewController` with the matching style. [HIG-DUO "Arrangement views"; TT-POSE 14:39]
-- [ ] Arrangement views contain no navigation containers and are not inside `List` / `ScrollView`. [HIG-DUO; TT-POSE 16:09]
-- [ ] Highest-priority manually laid-out controls query `reservedRegions(kind: .division)` and displace themselves. [TT-POSE 16:34]
+- [ ] Arrangement views contain no navigation containers and are not inside `NavigationSplitView`, `List`, `ScrollView`, "or other container that might cause part of your view to become inaccessible." [HIG-DUO; TT-POSE 16:09; PREP]
+- [ ] Highest-priority manually laid-out controls query `reservedRegions(kind: .division)` and displace themselves; RTL handled (default mirroring or `layoutDirectionBehavior: .fixed`). [TT-POSE 16:34; DocC]
 - [ ] Camera-centric UI queries `reservedRegions(kind: .occlusion)` and keeps content clear when active. [TT-POSE 0:27, 8:07]
 - [ ] Displacement is minimal: only what must move, moved together when related; scrolling content does not displace. [HIG-DUO; TT-POSE 2:26]
 
@@ -74,4 +86,4 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 ## I. Things that must be surfaced, not assumed
 
 - [ ] Nowhere does generated code or documentation state point dimensions, scale factor, bar width, hinge thresholds, or safe-area values for iPhone Duo. See `device-facts.md` "NOT documented". 
-- [ ] All iOS 27.1 symbols are flagged as pre-release pending DocC publication. See `api-index.md`.
+- [ ] iOS 27.1 symbols are flagged **beta** (DocC published 2026-09-22, availability "iOS 27.1 beta"); SwiftUI `onHingeChange` flagged Tech-Talk-only. See `api-index.md`.

@@ -31,7 +31,7 @@ Apple does not state the size classes in Split View multitasking or with a pinne
 1. "The interface orientation on the outer display behaves like any other iPhone. iPhone Duo is a great opportunity to support landscape orientation, as people may want to set the phone down like a tent. Interface orientation on the inner display behaves differently. **The inner display doesn't honor your supported interface orientations.** As with Idiom, avoid checking interface orientation for layout decisions. Use size classes instead."
 2. Later in the same talk: "iPhone Duo will continue to honor the `UIRequiresFullScreen` key, but your app will still resize when someone opens or closes their iPhone Duo. **iPhone Duo respects your supported interface orientations, but your app will scale on the inner display, including in Split View multitasking.**"
 
-These two passages read differently, and Apple has not published a reconciliation. Related HIG-DUO game guidance: "You can choose to lock to either portrait or landscape orientation, but be sure to fill the screen as the device pose changes." What Apple is unambiguous about: do not build layout logic on orientation; build it on size classes. If exact orientation semantics matter to a task, tell the user this ambiguity exists rather than resolving it silently.
+These two passages read differently, and Apple has not published a reconciliation. PREP (2026-09-22) adds only: "Don't use `userInterfaceIdiom` or `UIInterfaceOrientation` for layout decisions in your UIKit app." Related HIG-DUO game guidance: "You can choose to lock to either portrait or landscape orientation, but be sure to fill the screen as the device pose changes." What Apple is unambiguous about: do not build layout logic on orientation; build it on size classes. If exact orientation semantics matter to a task, tell the user this ambiguity exists rather than resolving it silently.
 
 ## Windows, scenes, multitasking (TT-SCENES chapter summaries; TT-DESIGN)
 
@@ -49,7 +49,15 @@ These two passages read differently, and Apple has not published a reconciliatio
 | iOS 27 SDK | "Your app will extend to the left of the status bar area on the inner display." |
 | iOS 27.1 SDK | "Your app extends to the edge of the screen. Standard navigation and toolbar buttons now lay out vertically under the status bar." |
 
-Tooling: "download Xcode 27.1. Choose the iPhone Duo simulator to run your app in Device Hub. Use the control buttons at the bottom of the screen to open, close, rotate, or fold iPhone Duo." (TT-PREPARE) — Xcode 27.1 beta was listed as "Coming later this month" on the Get Ready page on 2026-09-10.
+Tooling: "download Xcode 27.1. Choose the iPhone Duo simulator to run your app in Device Hub. Use the control buttons at the bottom of the screen to open, close, rotate, or fold iPhone Duo." (TT-PREPARE)
+
+**Xcode 27.1 beta shipped** (Apple developer email 2026-09-18; release notes live 2026-09-22). From the Xcode 27.1 Beta Release Notes:
+- "includes Swift 6.4 and SDKs for iOS 27.1, iPadOS 27, tvOS 27, watchOS 27, macOS 27, and visionOS 27... requires a Mac running macOS Tahoe 26.6 or later."
+- Previews: "The canvas overrides picker now includes a Display group for previewing content on a device's alternative display."
+- Simulator known issues: "Initial Simulator launch can take several minutes." "StandBy is unavailable in the iPhone Duo Simulator runtime." "Running and debugging most app extensions is unavailable in the iPhone Duo Simulator runtime."
+- Mac Catalyst: "Projects that use APIs specific to iOS 27.1 show compile errors when building for Mac Catalyst... Workaround: Use build-time conditionals like `#if !targetEnvironment(macCatalyst)`."
+
+PREP restates the SDK gate more simply: "Build your app with the latest version of Xcode to use all of the available screen space on iPhone Duo. When you build with Xcode 26 and earlier, your app doesn't extend under the status bar and camera." 
 
 ## Display specifications (APPLE-SPECS — apple.com tech specs, **not** developer documentation)
 
@@ -62,7 +70,9 @@ Both: ProMotion up to 120 Hz, Always-On, Dynamic Island, HDR, P3. Footnote: "Whe
 
 Use these numbers only for marketing assets or bezel mockups. **Do not derive point sizes or a scale factor from them** (see next section), and do not put them into layout code — HIG-DUO says "Avoid fixed widths and display-specific dependencies."
 
-## NOT documented by Apple as of 2026-09-10 — do not assume, ask the user or verify in the SDK
+## NOT documented by Apple as of 2026-09-22 — do not assume, ask the user or verify in the SDK
+
+(Re-checked 2026-09-22 against the new article, HIG page, and DocC. Every item below is still unpublished.)
 
 - **Point (pt) dimensions** of either display, and the **display scale factor**. The HIG Layout page, as fetched on 2026-09-10, contains no iOS device-dimension table (earlier change-log entries refer to one). Dividing pixels by 3 is a guess; do not present it as fact.
 - **Width in points of the vertical bar region** (the side strip holding Dynamic Island, status bar, toolbar, tab bar).
@@ -71,5 +81,5 @@ Use these numbers only for marketing assets or bezel mockups. **Do not derive po
 - **Inner-display aspect ratio in Apple's developer documentation.** The only published figure is the apple.com pixel resolution above (1878 × 2670, so not square). HIG says split arrangements decide horizontal vs vertical based on whether the *arrangement* is "wider than it is tall"; the arrangement's bounds, not the display's, are what matter, and they change with Split View, PiP, and folding.
 - **Which of the "six device poses"** map to which size-class combinations beyond the outer/inner table above.
 - **Any guidance for web, React Native, Flutter, Unity, or other non-native UI stacks.** Apple's material is SwiftUI, UIKit, AVFoundation/AVKit, and one HIG paragraph on games.
-- **Device Hub / simulator specifics for iPhone Duo** beyond the one sentence quoted above; Xcode 27 RC release notes contain no iPhone Duo mentions.
-- **Final API signatures.** All iOS 27.1 symbols are known only from Tech Talk code samples; DocC pages are not published. See `api-index.md` for provenance per symbol.
+- **Device Hub pose-control details** beyond the one Tech Talk sentence; the Xcode 27.1 notes list only known issues (above).
+- **The SwiftUI hinge modifier (`onHingeChange`)** has no DocC page; UIKit `UIHinge` / `UIHingeInteraction` are documented. Other 27.1 signatures are now published and marked **beta** — see `api-index.md`; names can still change before release.

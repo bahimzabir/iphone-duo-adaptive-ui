@@ -1,6 +1,6 @@
 # Vertical bars: toolbars, tab bars, and navigation controls on iPhone Duo
 
-Sources: HIG-DUO "Vertical controls"; TT-BARS (transcript + on-page sample code); TT-DESIGN; TT-PREPARE. Code samples are Apple's, reproduced verbatim. API provenance is in `api-index.md`.
+Sources: HIG-DUO "Vertical controls"; TT-BARS (transcript + on-page sample code); TT-DESIGN; TT-PREPARE; PREP (Apple's article); DocC pages verified 2026-09-22 (iOS 27.1 beta). Code samples are Apple's, reproduced verbatim. API provenance is in `api-index.md`.
 
 ## What the system does
 
@@ -41,6 +41,15 @@ var body: some View {
 let toolbar = UIToolbar()
 toolbar.items = [...]
 ```
+
+## Which containers participate — Apple's article version (PREP)
+
+"The system handles the selection of horizontal and vertical bar presentation differently in some contexts:
+- Inspectors. The system presents bars in inspectors horizontally.
+- Split views. In a split view displaying multiple views, the system shows bars horizontally for the sidebar or content view, and vertically for the detail view.
+- Sheets. On the outer display, the system presents bars vertically for sheets by default. Use `toolbarVerticalBehavior(_:)` in SwiftUI or `preferredVerticalBarBehavior` in UIKit to disable vertical presentation for your bars. For sheets on the inner display, the system presents the toolbar horizontally for centered or leading placements, and vertically for trailing placements. Set `presentationPlacement(_:)` in SwiftUI or `preferredPlacement` in UIKit to indicate where you want the system to place the sheet."
+
+Also from PREP: "If your view has a hero or background image, extend it under a vertical bar using `backgroundExtensionEffect()` in SwiftUI, or `UIBackgroundExtensionView` in UIKit."
 
 ## Which containers participate (TT-BARS 3:09)
 
@@ -152,10 +161,21 @@ let item = UIBarButtonItem(...)
 item.badge = .count(7)
 ```
 
+## Item representation rules (PREP, verbatim)
+
+"When you create toolbar items, specify both an icon and a title for items that you want to have the most adaptability. iPhone Duo might present items vertically, horizontally, or in an overflow menu:
+- The system uses an icon for an item it presents vertically.
+- The system uses an icon or a title for an item it presents horizontally, preferring an icon.
+- The system uses an icon and title for an item in an overflow menu.
+- If your item has a title and doesn't have an icon, the system doesn't present it vertically.
+- If your item uses a custom view rather than a title or icon, the system doesn't present it vertically."
+
+DocC on `ToolbarItemAxisBehavior.horizontalOnly` / `UIBarButtonItem.AxisBehavior.horizontalOnly`: "If an item only supports horizontal bars and no horizontal bars are present, the item is not shown." On `.verticalPreferred`: "If both horizontal & vertical bars are present and the item is `.verticalPreferred`, the system prefers placing the item in the vertical bar."
+
 ## Custom views inside a vertical bar (TT-BARS 10:07)
 
 - Custom views must "either fit the bar's fixed width or have a vertically adapted layout." Consider adjusting metrics (Apple's example: an action panel "hides its titles and becomes slightly shorter when vertical").
-- Detect a vertical bar by reading `toolbarVerticalEdge` (SwiftUI environment) or `verticalBarEdge` (UIKit trait). "The value is populated when items can be on vertical axis, and nil or unspecified when they can't." Readable from content views and from an item's custom view.
+- Detect a vertical bar by reading `toolbarVerticalEdge` (SwiftUI environment, `HorizontalEdge?`) or `verticalBarEdge` (UIKit trait, `UIVerticalBarEdge`). DocC: it "reflects the system's preferred edge for the vertical bar in the current context, regardless of whether a vertical bar is currently visible"; returns `nil` / `.unspecified` "on devices and in contexts where the system never places a vertical bar." Readable from content views and from an item's custom view.
 - "a vertical bar doesn't have a scroll-edge effect by default. However, it does have a background when the reduced transparency accessibility setting is enabled. Make sure your custom view content stays legible regardless."
 - Spacing: "flexible spacers are zero size in the vertical axis. But fixed spacers continue to respect their minimum size. Your app shouldn't be creating additional spacing." HIG-DUO: use `ToolbarItemGroup` / `UIBarButtonItemGroup` and "avoid adding fixed spacing yourself."
 
@@ -242,6 +262,8 @@ item.visibilityPriority = .high
 
 Published DocC for the priority types (these pages exist): `ToolbarItemVisibilityPriority` has `.automatic`, `.low`, `.high`, `init(lowerThan:)`, `init(higherThan:)`; `UIBarButtonItemVisibilityPriority` has `.standard`, `.low`, `.high`, `init(_:)`, `init(lowerThan:)`, `init(higherThan:)`, `init(rawValue:)`. `ToolbarOverflowMenu` content "is placed into the overflow menu in the navigation bar" and is always in overflow regardless of space. `additionalOverflowItems`: assigning non-nil makes the overflow button appear on the trailing edge; the system also adds items that don't fit.
 
+Compression enums (DocC): SwiftUI `ToolbarVerticalCompressionBehavior` `.automatic` / `.prefersTabBar` / `.prefersToolbarItems`; UIKit `UIVerticalBarCompressionBehavior` `.automatic` / `.prefersBarItems` / `.prefersTabBar`. Default `.automatic`.
+
 ## When to opt out (HIG-DUO; TT-BARS 14:21)
 
 "In general, don't override the default bar placement." (HIG-DUO) Apple's two exceptions:
@@ -267,6 +289,8 @@ class MyViewController: UIViewController {
 ```
 
 When disabled in a sheet on the outer display, "sheets stop just short of the front-facing camera and the status bar repositions itself." (TT-DESIGN)
+
+DocC guidance on `toolbarVerticalBehavior(_:)` / `preferredVerticalBarBehavior`: "Disable the vertical bar only for UIs that are better served by horizontal bars — such as a fullscreen video player with toolbar controls, or a non-scrolling layout like a calculator where horizontal space is at a premium. Treat it as a stable choice: avoid changing it frequently as the user navigates, and don't toggle it for a single view as a function of that view's state. To hide the bars on a given screen rather than change the layout, use `toolbarVisibility(_:for:)` instead." Resolution: a `NavigationStack` "uses the top most view of its stack", a `TabView` "uses the selected view", a `NavigationSplitView` "uses the view in the trailing-most column." "When the value changes, the system animates the transition: content reflows to or from the horizontal bars while the status bar changes axis and the leading or trailing safe area inset for the vertical bar is added or removed." 
 
 ## Full-width layouts without bars (HIG-DUO)
 

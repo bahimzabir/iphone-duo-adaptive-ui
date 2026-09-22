@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "iphone-duo-adaptive-ui",
   "displayName": "iPhone Duo Adaptive UI",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone. Grounded only in Apple's Human Interface Guidelines and September 2026 Tech Talks; flags what Apple has not documented instead of guessing.",
   "author": {
     "name": "Abderrahim",

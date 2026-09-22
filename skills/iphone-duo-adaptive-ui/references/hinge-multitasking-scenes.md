@@ -1,13 +1,37 @@
 # Hinge, multitasking, scenes, and cameras (iOS 27.1)
 
-Sources: TT-SCENES (chapter summaries + sample code), TT-CAMERA (chapter summaries + sample code), TT-DESIGN, TT-PREPARE. These are outside pure layout but affect how a responsive interface behaves. Code is Apple's, verbatim. No DocC pages were published for these APIs on 2026-09-10.
+Sources: TT-SCENES, TT-CAMERA (chapter summaries + sample code), TT-DESIGN, TT-PREPARE, PREP, and DocC pages verified 2026-09-22. These are outside pure layout but affect how a responsive interface behaves. Code is Apple's, verbatim.
 
 ## Hinge state — for interactions, not layout (TT-SCENES 0:49–2:35)
 
 - "SwiftUI provides a new onHingeChange modifier and UIKit provides UIHingeInteraction. Both report the high-level hinge status — closed, partially open, and fully open — as well as continuous updates of the hinge angle."
 - "Hinge data is observed live and is ideal for driving interactions or effects. For layout, use the arrangement and region APIs covered in 'Strike a pose with adaptive layouts on iPhone Duo' instead."
 - "Check for a non-null hinge, since null indicates a device without one."
-- Apple does not publish the angle thresholds that separate the three statuses.
+- Apple does not publish the angle thresholds that separate the statuses.
+- UIKit is fully documented (iOS 27.1 beta): `UIHingeInteraction(updateHandler:)` added with `view.addInteraction(_:)`; the handler receives `(interaction, UIHingeInteraction.Update)`; `update.hinge: UIHinge?` is `nil` "when the interaction leaves a hierarchy that provides hinge updates"; `UIHinge.angle: CGFloat` is "in radians"; `UIHinge.status` is `.closed` / `.partiallyOpen` / `.fullyOpen` / `.unknown`; `isEnabled` toggles the interaction. DocC: "The rate and granularity of angle updates are system policy and can change based on system state, so don't depend on a particular update frequency or precision. If you only need to know whether the hinge is closed, partially open, or fully open, prefer `status` over the angle."
+- The SwiftUI `onHingeChange` modifier still had no DocC page on 2026-09-22; its shape is known only from the Tech Talk sample below.
+
+```swift
+// UIKit — DocC sample for UIHingeInteraction
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let interaction = UIHingeInteraction { [weak self] _, update in
+        guard let self else { return }
+        // A nil `hinge` indicates the interaction has left a
+        // hierarchy that provides hinge updates.
+        guard let hinge = update.hinge else {
+            handleHingeUnavailable()
+            return
+        }
+
+        updateAngleDisplay(with: hinge.angle)
+        updateStatusDisplay(with: hinge.status)
+    }
+
+    view.addInteraction(interaction)
+}
+```
 
 ```swift
 // Calculate a pitch bend from the hinge angle  (TT-SCENES 2:17)
@@ -44,7 +68,7 @@ The closure receives "the previous and current hinge context." Reset your effect
 ## Multiple scenes (TT-SCENES 3:38)
 
 - "iPhone Duo is the first iPhone to support multiple instances of your app's UI, and apps that support this on iPad will too."
-- "new windows can't be created on the outer display — that's reserved for the inner display. Handle errors when requesting new scenes, and use `UIWindowSceneActivationAction`, "which automatically hides when new windows aren't available"."
+- "new windows can't be created on the outer display — that's reserved for the inner display. Handle errors when requesting new scenes, and use `UIWindowSceneActivationAction`, "which automatically hides when new windows aren't available". DocC name: `UIWindowScene.ActivationAction` (iOS 15+), "a menu element that requests a window scene"; "You can specify an alternate action to display on iPhone and apps that don't support multiple windows.""
 
 ## Screens: never `UIScreen.main` (TT-PREPARE 3:57)
 
@@ -81,7 +105,12 @@ ConcentricRectangle()
 // UICornerConfiguration
 ```
 
-## Scene accessories — content on the other display (TT-SCENES 4:22–6:44)
+## Scene accessories — content on the other display (TT-SCENES 4:22–6:44; PREP; DocC)
+
+DocC (`sceneAccessory(content:)`): "A scene accessory declares supplementary content that the system presents on the app's behalf when an associated piece of system functionality becomes available... The app declares what content to provide; the system decides when and where to present it. Scene accessories enhance the app's experience when available, but the app must remain fully functional without them." `CameraCaptureAccessory` "may be presented while the app is in the foreground and has an active camera capture session... Unlike `ExternalNonInteractiveAccessory`, the content can be interactive." UIKit: `UISceneAccessory.cameraCapture(sceneConfiguration:userInfo:)` registered with `UIViewController.registerSceneAccessory(_:)` (iOS 27.0).
+
+Apple's article "Registering a camera capture accessory on iPhone Duo": "Keep any interaction minimal. Anything your app shows on the outer display is an enhancement... Keep all essential controls in your capture interface, because the system can withdraw accessory content at any time." "Design your capture interface so it works when no outer display exists, and when the system presents nothing there."
+
 
 - "Scene accessories let your app show content on multiple displays at once, pairing additional content with your main UI." Availability is system-controlled; "they're enabled by default but can be toggled at any time, so respond to availability changes using observation tracking."
 - **CameraCaptureAccessory** (camera apps): "pairs additional UI on the outer display while your main UI stays on the inner display... It's available when your app is full screen on the inner display with an active camera session, and you register it on the same view as your camera UI."
