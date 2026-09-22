@@ -1,12 +1,13 @@
 # Sources
 
-Every fact in this skill traces to one of the Apple sources below. All were fetched on **2026-09-10**. Nothing in this skill comes from third-party blogs, forums, or inference. When a source and the live page disagree, the live page wins; re-fetch before relying on version-sensitive details.
+Every fact in this skill traces to one of the Apple sources below. First fetched **2026-09-10**; re-verified and extended **2026-09-22** after Apple shipped Xcode 27.1 beta and the API reference. Nothing in this skill comes from third-party blogs, forums, or inference. When a source and the live page disagree, the live page wins; re-fetch before relying on version-sensitive details.
 
 ## Primary (design guidance)
 
 | ID | Title | URL | Notes |
 |----|-------|-----|-------|
-| HIG-DUO | Human Interface Guidelines — Designing for iPhone Duo | https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo | New page, change log dated September 9, 2026. Full text in `hig-designing-for-iphone-duo.md`. |
+| HIG-DUO | Human Interface Guidelines — Designing for iPhone Duo | https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo | New page, change log dated September 9, 2026. Unchanged as of 2026-09-22. Full text in `hig-designing-for-iphone-duo.md`. |
+| PREP | Technology Overviews — Preparing your app for iPhone Duo | https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo | Published between 2026-09-10 and 2026-09-22. Full text in `apple-preparing-your-app-for-iphone-duo.md`. |
 | HIG-LAYOUT | Human Interface Guidelines — Layout | https://developer.apple.com/design/human-interface-guidelines/layout | Size classes, safe areas, layout margins. Change log September 9, 2026: "Updated guidance to reflect current best practices." As fetched, the page has **no** iOS/iPadOS device-dimension table. |
 | HIG-SPLIT | Human Interface Guidelines — Split views | https://developer.apple.com/design/human-interface-guidelines/split-views | General split-view guidance (no Duo-specific text as fetched). |
 | HIG-TOOLBARS | Human Interface Guidelines — Toolbars | https://developer.apple.com/design/human-interface-guidelines/toolbars | General toolbar guidance (no Duo-specific text as fetched). |
@@ -15,7 +16,7 @@ Every fact in this skill traces to one of the Apple sources below. All were fetc
 
 ## Primary (developer guidance — Apple Tech Talks, September 2026)
 
-These six talks are, as of 2026-09-10, the **only** published Apple source for the iOS 27.1 iPhone Duo APIs. Their DocC reference pages return 404. Chapter summaries and on-page sample code were extracted from the talk pages; spoken transcripts were read from the talks' English subtitle tracks.
+On 2026-09-10 these six talks were the only published Apple source for the iOS 27.1 iPhone Duo APIs. As of 2026-09-22 the DocC reference pages exist (see below); the talks remain the source for design rationale and timestamps. Chapter summaries and on-page sample code were extracted from the talk pages; spoken transcripts were read from the talks' English subtitle tracks.
 
 | ID | Title | URL |
 |----|-------|-----|
@@ -47,18 +48,54 @@ Landing page listing all six plus events: **Get Ready for iPhone Duo** — https
 | `UIView.safeAreaInsets` (UIKit) | https://developer.apple.com/documentation/uikit/uiview/safeareainsets |
 | Device Hub (Xcode) | https://developer.apple.com/documentation/xcode/device-hub |
 
-## API pages probed on 2026-09-10
+## API reference pages (DocC) — status on 2026-09-22
 
-Every symbol in `api-index.md` was probed against the DocC JSON endpoint; that file's DocC column holds the per-symbol result. Summary:
+All pages below returned HTTP 200 and carry **AVAILABILITY: iOS 27.1 beta, iPadOS 27.1 beta** unless noted. `api-index.md` holds the per-symbol detail.
 
-- **Found (HTTP 200), beyond the table above:** `topBarPinnedTrailing`, `cancellationAction`, `pinnedTrailingGroup`, `leadingItemGroups`, `leftItemsSupplementBackButton`, `UITabBarController.sidebar`, SwiftUI `badge(_:)`, `UIBarButtonItem.visibilityPriority`, `NavigationStack`, `UINavigationController`, `safeAreaLayoutGuide`, `ignoresSafeArea`, `UIWindowScene.screen`, `displayScale`, `UIRequiresFullScreen`, `AVCaptureDevice.RotationCoordinator`, `AVCaptureDevice.dynamicAspectRatio`, `AVCapturePhotoOutput.isCameraSensorOrientationCompensationEnabled`.
-- **Not found (HTTP 404):** `ArrangementView`, `arrangementViewStyle`, `overlayArrangementZIndex`, `GeometryProxy.reservedRegions`, `ReservedRegion`, `UIArrangementViewController`, `UISplitArrangement`, `UIView.reservedRegions`, `UIViewReservedRegion`, `toolbarVerticalBehavior`, `toolbarVerticalEdge`, `toolbarVerticalCompressionBehavior`, `verticalBarCompressionBehavior`, `verticalBarEdge`, `UIVerticalBarBehavior`, `preferredVerticalBarBehavior`, `axisBehavior` (both frameworks), `UIBarButtonItem.badge`, `onHingeChange`, `UIHingeInteraction`, `sceneAccessory`, `CameraCaptureAccessory`, `UIWindowSceneActivationAction`, `UICornerConfiguration`, `AVCaptureDeviceDirectionCoordinator`, `builtInOuterUltraWideCamera`, iOS 27.1 release notes, Xcode 27.1 release notes. A 404 can mean unpublished or a different path; treat every one as **pre-release, documented only by Tech Talk** until verified in the SDK.
+| Symbol | URL |
+|--------|-----|
+| `ArrangementView` (SwiftUI) | https://developer.apple.com/documentation/swiftui/arrangementview |
+| `ArrangementViewStyle` (`.automatic`, `.split`, `.overlay`) | https://developer.apple.com/documentation/swiftui/arrangementviewstyle |
+| `SplitArrangementViewStyle.axes(_:)` | https://developer.apple.com/documentation/swiftui/splitarrangementviewstyle/axes(_:) |
+| `overlayArrangementZIndex` | https://developer.apple.com/documentation/swiftui/environmentvalues/overlayarrangementzindex |
+| `ReservedRegion` (SwiftUI) | https://developer.apple.com/documentation/swiftui/reservedregion |
+| `ReservedRegion.QueryOptions.includeInactive` | https://developer.apple.com/documentation/swiftui/reservedregion/queryoptions |
+| `GeometryProxy.reservedRegions(kind:options:layoutDirectionBehavior:)` | https://developer.apple.com/documentation/swiftui/geometryproxy/reservedregions(kind:options:layoutdirectionbehavior:) |
+| `toolbarVerticalBehavior(_:)` / `ToolbarVerticalBehavior` | https://developer.apple.com/documentation/swiftui/view/toolbarverticalbehavior(_:) |
+| `toolbarVerticalEdge` | https://developer.apple.com/documentation/swiftui/environmentvalues/toolbarverticaledge |
+| `toolbarVerticalCompressionBehavior(_:)` / `ToolbarVerticalCompressionBehavior` | https://developer.apple.com/documentation/swiftui/view/toolbarverticalcompressionbehavior(_:) |
+| `axisBehavior(_:)` / `ToolbarItemAxisBehavior` | https://developer.apple.com/documentation/swiftui/toolbarcontent/axisbehavior(_:) |
+| `presentationPlacement(_:)` / `PresentationPlacement` (iOS 27.0) | https://developer.apple.com/documentation/swiftui/view/presentationplacement(_:) |
+| `backgroundExtensionEffect()` (iOS 26.0) | https://developer.apple.com/documentation/swiftui/view/backgroundextensioneffect() |
+| `sceneAccessory(content:)` / `CameraCaptureAccessory` | https://developer.apple.com/documentation/swiftui/cameracaptureaccessory |
+| `UIArrangementViewController` | https://developer.apple.com/documentation/uikit/uiarrangementviewcontroller |
+| `UISplitArrangement` / `UIOverlayArrangement` | https://developer.apple.com/documentation/uikit/uisplitarrangement-swift.struct |
+| `UIView.ReservedRegion` / `reservedRegions(kind:options:)` | https://developer.apple.com/documentation/uikit/uiview/reservedregion |
+| `UIViewReservedRegion` (Objective-C) | https://developer.apple.com/documentation/uikit/uiviewreservedregion |
+| `UIVerticalBarBehavior` / `preferredVerticalBarBehavior` | https://developer.apple.com/documentation/uikit/uiviewcontroller/preferredverticalbarbehavior |
+| `UITraitCollection.verticalBarEdge` | https://developer.apple.com/documentation/uikit/uitraitcollection/verticalbaredge |
+| `UINavigationItem.verticalBarCompressionBehavior` / `UIVerticalBarCompressionBehavior` | https://developer.apple.com/documentation/uikit/uinavigationitem/verticalbarcompressionbehavior |
+| `UIBarButtonItem.axisBehavior` / `UIBarButtonItem.AxisBehavior` | https://developer.apple.com/documentation/uikit/uibarbuttonitem/axisbehavior-swift.property |
+| `UISheetPresentationController.preferredPlacement` (iOS 27.0) | https://developer.apple.com/documentation/uikit/uisheetpresentationcontroller/preferredplacement |
+| `UIBackgroundExtensionView` (iOS 26.0) | https://developer.apple.com/documentation/uikit/uibackgroundextensionview |
+| `UIHinge` / `UIHingeInteraction` / `UIHingeInteraction.Update` | https://developer.apple.com/documentation/uikit/uihingeinteraction |
+| `UISceneAccessory` (iOS 27.0) | https://developer.apple.com/documentation/uikit/uisceneaccessory |
+| `UIWindowScene.ActivationAction` (iOS 15.0) | https://developer.apple.com/documentation/uikit/uiwindowscene/activationaction |
+| `AVCaptureDeviceDirectionCoordinator` (AVKit) | https://developer.apple.com/documentation/avkit/avcapturedevicedirectioncoordinator |
+| Article: Choosing a camera by the direction it faces | https://developer.apple.com/documentation/avkit/choosing-a-camera-by-the-direction-it-faces |
+| Article: Registering a camera capture accessory on iPhone Duo | https://developer.apple.com/documentation/avfoundation/registering-a-camera-capture-accessory-on-iphone-duo |
+| Article: Adapting your app when traits change (UIKit) | https://developer.apple.com/documentation/uikit/adapting-your-app-when-traits-change |
+| Xcode 27.1 Beta Release Notes | https://developer.apple.com/documentation/xcode-release-notes/xcode-27_1-release-notes |
+| Running your app on simulated or physical devices (Device Hub) | https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices |
+
+**Still not found on 2026-09-22 (HTTP 404 at every path tried):** the SwiftUI hinge modifier (`onHingeChange` — named in TT-SCENES and its sample code; Apple's site search was also checked), `UIBarButtonItem.badge`, `UICornerConfiguration`, `AVCaptureDevice.DeviceType.builtInOuterUltraWideCamera` page, iOS 27.1 release notes. Treat those spellings as Tech-Talk-only.
 
 ## Secondary (official Apple, but not developer documentation)
 
 | ID | Title | URL | Used for |
 |----|-------|-----|----------|
 | APPLE-SPECS | iPhone Duo — Tech Specs | https://www.apple.com/iphone-duo/specs/ | Display pixel resolution, diagonal size, ppi only. |
+| APPLE-MAIL | Apple Developer email "Start building for iPhone Duo." (2026-09-18) | — | States "Get Xcode 27.1 beta and new design kits to start creating for iPhone Duo." Used only to date the Xcode 27.1 beta release. |
 | DESIGN-RES | Apple Design Resources | https://developer.apple.com/design/resources/ | Lists a downloadable "iPhone Duo" bezel (Photoshop, PNG). No Figma/Sketch Duo template was listed at fetch time. |
 
 ## Apple documentation articles named in the talks (not fetched; titles as spoken)
