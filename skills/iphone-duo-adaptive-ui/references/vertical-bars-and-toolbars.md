@@ -1,6 +1,6 @@
 # Vertical bars: toolbars, tab bars, and navigation controls on iPhone Duo
 
-Sources: HIG-DUO "Vertical controls"; TT-BARS (transcript + on-page sample code); TT-DESIGN; TT-PREPARE; PREP (Apple's article); DocC pages verified 2026-09-22 (iOS 27.1 beta). Code samples are Apple's, reproduced verbatim. API provenance is in `api-index.md`.
+Sources: HIG-DUO "Vertical controls"; TT-BARS (transcript + on-page sample code); TT-DESIGN; TT-PREPARE; PREP (Apple's article); DocC pages verified 2026-09-22, re-verified 2026-10-26 (iOS 27.1, beta marker removed). Code samples are Apple's, reproduced verbatim. API provenance is in `api-index.md`.
 
 ## What the system does
 

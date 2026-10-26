@@ -1,6 +1,6 @@
 # Arrangement views and reserved regions (iOS 27.1)
 
-Sources: HIG-DUO "Dynamic layouts" (Reserved regions, Split views, Arrangement views); TT-POSE transcript and on-page sample code; TT-PREPARE; PREP (Apple's article, full text in `apple-preparing-your-app-for-iphone-duo.md`); DocC reference pages verified 2026-09-22 (availability **iOS 27.1 beta**). Code is Apple's, verbatim. Provenance per symbol is in `api-index.md`.
+Sources: HIG-DUO "Dynamic layouts" (Reserved regions, Split views, Arrangement views); TT-POSE transcript and on-page sample code; TT-PREPARE; PREP (Apple's article, full text in `apple-preparing-your-app-for-iphone-duo.md`); DocC reference pages verified 2026-09-22 and re-verified 2026-10-26 (availability **iOS 27.1**, beta marker removed). Code is Apple's, verbatim. Provenance per symbol is in `api-index.md`.
 
 ## Reserved regions — the concept (HIG-DUO)
 

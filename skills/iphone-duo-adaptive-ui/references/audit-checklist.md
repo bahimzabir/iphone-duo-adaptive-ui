@@ -7,7 +7,10 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 - [ ] App is built with the iOS 27.1 SDK (older SDKs do not get edge-to-edge layout or vertical bars). [TT-PREPARE 0:30]
 - [ ] App has been run in the iPhone Duo simulator via Device Hub in every pose the controls offer: open, closed, rotated, folded. [TT-PREPARE 1:17]
 - [ ] App has been tested in Split View multitasking on both the left and right side (vertical bar may be on either edge). [TT-PREPARE, "Respect safe areas" chapter, Device Hub drag test]
-- [ ] Xcode 27.1's App Resizability skill has been run, if available. [TT-PREPARE 9:12]
+- [ ] Apple's `app-resizability` skill has been run (Xcode coding assistant, or exported with `xcrun agent skills export --output-dir <abs path>`); its findings fixed or explicitly deferred. [DUO-PREPARE Step 1; `apple-app-resizability-skill.md`]
+- [ ] Info.plist prerequisites from Apple's skill checked read-only: a launch screen key is present (else `ITMS-90870`); iPad orientation declaration lists all four or none; `UIRequiresFullScreen` noted but not deleted. [XC-SKILL]
+- [ ] Tested in all three of Apple's tools: iOS resizable simulator in Device Hub; iPhone Mirroring on macOS 27 "to extreme sizes in both directions"; iPhone Duo simulator in Xcode 27.1. [DUO-PREPARE Step 3]
+- [ ] Tested with Reduce Transparency on: the system draws an opaque rectangle behind the vertical bar; content next to it still reads. [LAB-1]
 
 ## A2. Apple's own walkthrough (PREP "Address common layout and resizing considerations")
 
@@ -23,8 +26,12 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 
 - [ ] No layout decision keys off `userInterfaceIdiom`, interface orientation, or device model. Size classes only. [HIG-LAYOUT; TT-PREPARE 2:46]
 - [ ] No fixed widths, breakpoints, or metrics tied to a specific screen. [HIG-DUO; TT-DESIGN 3:42]
-- [ ] No `UIScreen.main` (or any static screen reference). Uses environment / trait collection / scene bounds, or `windowScene.screen`. [TT-PREPARE 3:57]
-- [ ] `traitCollection.displayScale` used instead of `UIScreen.main.scale`. [TT-PREPARE 9:25]
+- [ ] No `UIScreen.main` (or any static screen reference). Uses environment / trait collection / scene bounds, or `view.window?.windowScene?.screen`; no stored `UIScreen`; windows created with `UIWindow(windowScene:)`, never `UIWindow(frame: UIScreen.main.bounds)`. [TT-PREPARE 3:57; DUO-PREPARE]
+- [ ] Size is re-read whenever it changes: size-dependent layout lives in `layoutSubviews` / `viewDidLayoutSubviews` (or `GeometryReader` / `onGeometryChange`), with `viewWillTransition(to:with:)` for size-change work; nothing sized once at launch or in `viewIsAppearing`. [DUO-PREPARE]
+- [ ] `traitCollection.displayScale` / `@Environment(\.displayScale)` used instead of `UIScreen.main.scale`. [TT-PREPARE 9:25; DUO-PREPARE]
+- [ ] No `UIDevice.current.orientation`, `statusBarOrientation`, `interfaceOrientation`, or `windowScene.effectiveGeometry.interfaceOrientation` in layout logic; aspect decided by comparing the width and height of `view.bounds` / `superview.bounds` / `GeometryReader` size. [DUO-PREPARE; XC-SKILL]
+- [ ] No `userInterfaceIdiom == .phone` / `.pad` layout branches; no code that treats `horizontalSizeClass == .regular` as "iPad"; no `bounds.height == 844`-style device-size checks or known-size lists. [DUO-PREPARE]
+- [ ] Full-bleed hero images/video (`.scaleAspectFill`, `.aspectRatio(contentMode: .fill)`) were checked on the wider display; fill vs fit chosen by size class / aspect ratio, or a focal point set. [DUO-PREPARE]
 - [ ] Both size-class layouts exist: compact-width (outer display) and regular-width (inner display). The regular-width layout is not a stretched compact one. [HIG-DUO; TT-DESIGN 7:34]
 - [ ] Functionality and element state are identical across displays and poses; the inner display may add a hierarchy level but never removes one. [HIG-DUO "Create a consistent experience"]
 - [ ] Screen-corner-hugging UI uses `ConcentricRectangle` / `UICornerConfiguration`. [TT-PREPARE 4:30]
@@ -33,7 +40,8 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 
 - [ ] Interactive/foreground content is inside the safe area (SwiftUI default; UIKit `safeAreaLayoutGuide` or `safeAreaInsets`). [TT-PREPARE 6:06]
 - [ ] Only background/full-bleed art uses `ignoresSafeArea()` / `view.bounds`. [TT-PREPARE 7:07]
-- [ ] No code assumes left/right (or top/bottom) insets are equal; each edge handled independently. [TT-PREPARE 7:30]
+- [ ] No code assumes left/right (or top/bottom) insets are equal; each edge handled independently; no inset-threshold tests; no hardware constants subtracted from insets. [TT-PREPARE 7:30; XC-SKILL safe-area §6]
+- [ ] Direction vs physical edge is deliberate: `safeAreaLayoutGuide.leading/trailingAnchor` when the code means a direction; `safeAreaInsets.left/.right` only for physical edges; custom bar placement reads `traitCollection.verticalBarEdge` with `systemTraitsAffectingVerticalBarEdge` registration outside layout methods. [XC-SKILL]
 - [ ] Layout margins are used and treated as asymmetric. [TT-PREPARE]
 - [ ] In full-width immersive layouts, nothing interactive can sit under the vertical bar, Dynamic Island, or status bar. [HIG-DUO; TT-DESIGN 6:33]
 
@@ -83,7 +91,14 @@ Use this to review an existing SwiftUI or UIKit app, or to self-check generated 
 
 - [ ] Playable in every pose; fills the screen on pose change; aspect-ratio change preferred over letterbox/pillarbox; padding filled with artwork if unavoidable; text/control sizes consistent. [HIG-DUO "Make your game playable"]
 
+## H2. App Store (if shipping)
+
+- [ ] iPhone Duo screenshots prepared at 1398 × 2034 / 2034 × 1398 (outer) and 2007 × 2853 / 2853 × 2007 (inner) pixels; app previews at the accepted 886 × 1920 / 1920 × 886. [ASC-SHOTS; ASC-PREVIEWS]
+- [ ] Team knows: submitting Duo screenshots earns the "optimized for iPhone Duo" badge; from April 2027 Duo screenshots are required (news: "any apps or games submitted"; spec page: "any app using the iOS 27.1 SDK or later"). [NEWS-1005; ASC-SHOTS]
+- [ ] Assets checked in App Store Connect's preview tool; featuring nomination considered (Helpful Details → optimized for iPhone Duo, all poses). [DUO-PREPARE]
+
 ## I. Things that must be surfaced, not assumed
 
 - [ ] Nowhere does generated code or documentation state point dimensions, scale factor, bar width, hinge thresholds, or safe-area values for iPhone Duo. See `device-facts.md` "NOT documented". 
-- [ ] iOS 27.1 symbols are flagged **beta** (DocC published 2026-09-22, availability "iOS 27.1 beta"); SwiftUI `onHingeChange` flagged Tech-Talk-only. See `api-index.md`.
+- [ ] Symbols with no DocC page (`onHingeChange` / `DeviceHinge`, `UIBarButtonItem.badge`, `UICornerConfiguration`, outer/inner camera device types) are described as "declared in the iOS 27.1 SDK, not yet documented", not as fully documented. See `api-index.md` 🧩 rows.
+- [ ] Any pixel figure quoted for the inner display names its source, because Apple's tech specs (1878 × 2670) and App Store Connect (2007 × 2853) disagree. [`device-facts.md`]
