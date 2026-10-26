@@ -1,10 +1,10 @@
 ---
 name: iphone-duo-adaptive-ui
-description: Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone with an outer display and a hinged inner display. Use when a task mentions iPhone Duo, foldable or folding iPhone, the hinge or fold, inner/outer display, device poses, vertical bars or side toolbars, ArrangementView, reserved regions, Split View on iPhone, getting an app ready for iPhone Duo, iPhone Duo App Store screenshots, or making an iOS app resizable across size classes. Grounded only in Apple's Human Interface Guidelines, the "Preparing your app for iPhone Duo" article and "Three steps" page, the released iOS 27.1 SDK and API reference, the September 2026 Tech Talks and Group Labs; flags what Apple has not documented instead of guessing.
+description: Build, adapt, or review SwiftUI and UIKit interfaces for iPhone Duo, Apple's folding iPhone with an outer display and a hinged inner display. Use when a task mentions iPhone Duo, a foldable or folding iPhone, the hinge or fold, inner or outer display, device poses, vertical bars or side toolbars, ArrangementView, reserved regions, Split View on iPhone, getting an app ready for iPhone Duo, iPhone Duo App Store screenshots, or making an iOS app resizable across size classes. Grounded only in Apple's published material; says what Apple has not documented instead of guessing.
 license: MIT (skill text). Quoted Apple documentation remains Apple's; see LICENSE in the repository root.
 metadata:
   author: Abderrahim
-  version: "0.3.0"
+  version: "0.3.1"
   sources-fetched: "2026-09-10, re-verified 2026-09-22 and 2026-10-26"
   status: "iOS 27.1 released; iPhone Duo on sale since 2026-10-23; Xcode 27.1 (27A9275) SDK used to verify symbols without DocC pages"
 ---
@@ -13,132 +13,158 @@ metadata:
 
 ## Ground rules (read first)
 
-1. **Only Apple sources.** Everything here comes from the HIG page "Designing for iPhone Duo", Apple's article "Preparing your app for iPhone Duo", the "Get ready for iPhone Duo" hub and its "Three steps" page, the October 2026 news item and App Store Connect specifications, the iOS 27.1 DocC reference and released SDK, Apple's six Tech Talks, the Group Lab Q&As, and Apple's own `app-resizability` skill (fetched 2026-09-10, re-verified 2026-09-22 and 2026-10-26). `references/sources.md` lists every URL. Do not supplement with blog posts or memory. Spoken Group Lab answers rank below written pages; `references/group-lab-qa.md` marks hedged ones.
-2. **Do not invent numbers or APIs.** Apple has not published point dimensions, scale factor, vertical-bar width, hinge angle thresholds, or safe-area values. Apple's two published inner-display pixel figures even disagree (tech specs 1878 × 2670; App Store Connect 2007 × 2853). If a task needs one, say so and ask the user; never derive them (e.g. pixels ÷ 3). See `references/device-facts.md` → "NOT documented".
-3. **iOS 27.1 is released; a few symbols are SDK-only.** `ArrangementView`, reserved regions, vertical-bar modifiers, `UIHinge` and scene accessories have DocC pages with plain iOS 27.1 availability (Xcode 27.1, macOS Tahoe 26.6+). `onHingeChange` / `DeviceHinge`, `UIBarButtonItem.badge`, `UICornerConfiguration` and the outer/inner camera device types have **no DocC page** but are declared in the released SDK; say "declared in the SDK, not yet documented" when you use them. Spellings: `references/api-index.md`.
-4. **Scope is SwiftUI and UIKit.** Apple provides no iPhone Duo guidance for web, React Native, Flutter, or Unity (games get one HIG paragraph). If the stack is not native, state that and ask before applying anything here by analogy.
-5. **Quote, don't paraphrase, when precision matters.** The reference files keep Apple's wording; reuse it.
+1. **Only Apple sources.** HIG "Designing for iPhone Duo"; the article "Preparing your app for iPhone Duo"; the "Get ready for iPhone Duo" hub and its "Three steps" page; the October 2026 news item and App Store Connect specs; the iOS 27.1 DocC reference and released SDK; the six Tech Talks; the three Group Labs; Apple's own `app-resizability` skill. `references/sources.md` lists every URL. Do not supplement with blog posts or memory. Spoken Group Lab answers rank below written pages; the `group-lab-day*.md` files mark hedged ones.
+2. **Do not invent numbers or APIs.** Apple has not published point dimensions, scale factor, vertical-bar width, hinge angle thresholds, or safe-area values. Its two published inner-display pixel figures disagree (tech specs 1878 × 2670; App Store Connect 2007 × 2853). If a task needs one, say so and ask the user; never derive (e.g. pixels ÷ 3). → `references/device-facts.md` "NOT documented".
+3. **Some symbols are SDK-only.** `onHingeChange` / `DeviceHinge`, `UIBarButtonItem.badge`, `UICornerConfiguration` and the outer/inner camera device types have no DocC page but are declared in the released iOS 27.1 SDK (🧩 rows in `references/api-index.md`). When you use one, say "declared in the SDK, not yet documented".
+4. **Dated claims expire.** Compare today with `sources-fetched` above. If more than three months have passed, re-probe the 🧩 rows, re-fetch the HIG page and the "Three steps" page, and re-check App Store deadlines before relying on them. Phrase deadlines as what Apple stated and when (e.g. "Apple said in October 2026 that iPhone Duo screenshots become required in April 2027").
+5. **Scope is SwiftUI and UIKit.** Apple provides no iPhone Duo guidance for web, React Native, Flutter, or Unity (games get one HIG paragraph). If the stack is not native, say so and ask before applying anything here by analogy.
+6. **Quote, don't paraphrase, when precision matters.** The reference files keep Apple's wording; reuse it.
 
 ## Fast facts
 
 | Topic | Apple's statement |
 |-------|-------------------|
-| Displays | Outer (device closed) and inner (device open), each with its own front camera; center hinge. Outer display is "wider and shorter" than other iPhones. |
-| Size classes | Outer portrait: compact W / regular H. Outer landscape: compact W / compact H. Inner: regular W / regular H (any orientation). Split View and pinned PiP change these at runtime. |
-| Where bars go | Outer display and inner-landscape: toolbars, tab bars, nav controls move to a **vertical bar on the side** (Apple's outer-display diagram labels it the trailing edge and TT-DESIGN says "the right side"; each app's outer edge in Split View; hardware-aligned, so the same physical side in RTL). Inner portrait keeps horizontal bars. |
-| Vertical bar contents (top→bottom) | Dynamic Island, status bar, toolbar (nav controls first, then prominent actions, then remaining groups), tab bar. |
-| Reserved regions | Outer camera (always; grows with Live Activities), inner camera (only when camera active), folding region (only when partially folded; zero width when flat). |
-| What adapts for free | Alerts, action sheets, menus, context menus, popovers, sheets, toolbar buttons, `NavigationSplitView`/`UISplitViewController`, `TabView`/`UITabBarController`, `List`, `ScrollView`. |
-| Orientation | Do not use it for layout. Outer display honors supported orientations; the inner display does not and is always regular/regular (TT-PREPARE, reconciled by LAB-1). Compare width and height of your own bounds instead. |
-| SDK gates | iOS 26 SDK or earlier: "appear in the center of the display, with empty space surrounding the window" when open; content "to the left of the status bar and camera" when closed. iOS 27 SDK: "fill most of the inner display... but still avoid the status bar on the right edge." iOS 27.1 SDK or later: "extend to use the full display, with toolbars and tab bars appearing vertically below the status bar." No opt-out once linked on iOS 27. |
-| Dates | iPhone Duo on sale October 23, 2026, running iOS 27.1. Xcode 27.1 released. From April 2027 App Store submissions need iPhone Duo screenshots (news: "any apps or games"; spec page: "any app using the iOS 27.1 SDK or later"). |
+| Displays | Outer (closed) and inner (open), each with its own front camera; center hinge. Outer display is "wider and shorter" than other iPhones. |
+| Size classes | Outer portrait: compact W / regular H. Outer landscape: compact W / compact H. Inner: regular W / regular H in any orientation. Split View and pinned PiP change these at runtime. |
+| Where bars go | Outer display and inner landscape: toolbars, tab bars, nav controls move to a vertical bar on the side (trailing edge; each app's outer edge in Split View; same physical side in RTL). Inner portrait keeps horizontal bars. |
+| Vertical bar, top to bottom | Dynamic Island, status bar, toolbar (nav controls, then prominent actions, then remaining groups), tab bar. |
+| Reserved regions | Outer camera (always; grows with Live Activities), inner camera (only while the camera is active), folding region (only when partially folded; zero width when flat). |
+| Adapts for free | Alerts, action sheets, menus, context menus, popovers, sheets, toolbar buttons, `NavigationSplitView` / `UISplitViewController`, `TabView` / `UITabBarController`, `List`, `ScrollView`. |
+| Orientation | Never a layout input. The outer display honors supported orientations; the inner display does not and is always regular/regular. Compare your own bounds' width and height instead. |
 
 ## Workflow
 
 Follow in order. Each step names its reference file.
 
-### 1. Confirm scope, SDK, and run Apple's skill first
-- Native SwiftUI/UIKit? If not, stop and tell the user Apple has no guidance for their stack (rule 4).
-- Target the iOS 27.1 SDK (Xcode 27.1). Test with Apple's three tools: the iOS resizable simulator in Device Hub, iPhone Mirroring on macOS 27 resized "to extreme sizes in both directions", and the iPhone Duo simulator (open / close / rotate / fold controls; drag the app to each side in Split View; Previews canvas "Display" override). Known simulator gaps: slow first launch, no StandBy, most app extensions unavailable. → `references/device-facts.md`
-- For "get my app ready for iPhone Duo" requests, run Apple's `app-resizability` skill first (Xcode coding assistant, or `xcrun agent skills export --output-dir <abs path>`); it rewrites `UIScreen.main`, orientation, idiom, safe-area and lifecycle code and checks three Info.plist prerequisites. Then continue here for bars, arrangement, hinge, design, and the audit. → `references/apple-app-resizability-skill.md`
+### 1. Confirm scope and SDK, run Apple's skill first
+- Native SwiftUI/UIKit? If not, stop (rule 5).
+- Target the iOS 27.1 SDK. Older SDKs: iOS 26 or earlier runs centered with empty space when open; iOS 27 fills most of the inner display but avoids the status bar; only 27.1 goes edge to edge with vertical bars. No opt-out once linked on iOS 27.
+- Test with Apple's three tools: the iOS resizable simulator in Device Hub; iPhone Mirroring on macOS 27 resized "to extreme sizes in both directions"; the iPhone Duo simulator (open / close / rotate / fold, drag to each side in Split View, Previews "Display" override).
+- For "get my app ready for iPhone Duo", run Apple's `app-resizability` skill first (Xcode coding assistant, or `xcrun agent skills export --output-dir <abs path>`). It rewrites `UIScreen.main`, orientation, idiom, safe-area and lifecycle code and checks three Info.plist keys. Then continue here. → `references/apple-app-resizability-skill.md`, `references/device-facts.md`
 
 ### 2. Make layout decisions on size classes only
-- Read `horizontalSizeClass` / `verticalSizeClass` (SwiftUI environment, UIKit trait collection). Never idiom, orientation (including `windowScene.effectiveGeometry.interfaceOrientation`), device model, device-size constants like `bounds.height == 844`, or `UIScreen.main`. Aspect questions: "compare the width and height of the space you have" (`view.bounds`, `superview.bounds`, `GeometryReader`). Re-read size in `layoutSubviews` / `viewDidLayoutSubviews` / `onGeometryChange`, never once at launch.
+- Read `horizontalSizeClass` / `verticalSizeClass` (SwiftUI environment, UIKit trait collection).
+- Never branch on idiom, orientation (including `effectiveGeometry.interfaceOrientation`), device model, or size constants like `bounds.height == 844`.
+- For aspect questions, compare the width and height of `view.bounds`, `superview.bounds`, or the `GeometryReader` size.
+- Re-read size in `layoutSubviews` / `viewDidLayoutSubviews` / `onGeometryChange`, never once at launch or in `viewIsAppearing`.
 - Two layouts cover every pose: compact width (outer) and regular width (inner). Let the compact layout expand; do not redesign per pose.
-- Replace `UIScreen.main.scale` with `traitCollection.displayScale` / `@Environment(\.displayScale)`; get a screen only via `view.window?.windowScene?.screen`, never stored; create windows with `UIWindow(windowScene:)`. Full-bleed hero media: choose fill vs fit by size class or aspect ratio, or set a focal point.
-- Corners: `ConcentricRectangle` (SwiftUI) / `UICornerConfiguration` (UIKit). → `references/design-principles.md` §1, `references/hinge-multitasking-scenes.md` "Screens"
+- Scale from `traitCollection.displayScale` / `@Environment(\.displayScale)`. Screen only via `view.window?.windowScene?.screen`, never stored. Windows via `UIWindow(windowScene:)`.
+- Full-bleed hero media: choose fill vs fit by size class or aspect ratio, or set a focal point.
+- Corners: `ConcentricRectangle` (SwiftUI) / `UICornerConfiguration` (UIKit). → `references/design-principles.md` §1
 
 ### 3. Use standard containers first
-- Hierarchy: `NavigationSplitView` / `UISplitViewController` — collapses to one pane closed, expands open, evens its columns when folded.
-- Tabs: `TabView` / `UITabBarController`; optional sidebar on the inner display (`.defaultTabBarPlacement(.sidebar)` / `sidebar.preferredPlacement = .sidebar`) for information-dense apps.
-- Presentations: system sheets, alerts, menus, popovers — they get fold avoidance automatically. Inner-display sheets: `.presentationPlacement(.leading/.center/.trailing)` / `preferredPlacement`; trailing gets a vertical bar, centered/leading keep horizontal bars.
-- Do **not** build primary bars from `UIToolbar`, `UINavigationBar`, `UITabBar`; their items are ignored for vertical layout. → `references/arrangement-views-and-reserved-regions.md` "Split views"
+- Hierarchy: `NavigationSplitView` / `UISplitViewController`. Collapses closed, expands open, evens its columns when folded.
+- Tabs: `TabView` / `UITabBarController`. Optional sidebar on the inner display (`.defaultTabBarPlacement(.sidebar)` / `sidebar.preferredPlacement = .sidebar`) for information-dense apps.
+- Presentations: system sheets, alerts, menus, popovers get fold avoidance automatically. Inner-display sheets: `.presentationPlacement(.leading/.center/.trailing)` / `preferredPlacement`. Trailing gets a vertical bar; centered and leading keep horizontal bars.
+- Never build primary bars from `UIToolbar`, `UINavigationBar`, `UITabBar`. Their items stay horizontal. → `references/arrangement-views-and-reserved-regions.md` "Split views"
 
 ### 4. Respect asymmetric safe areas and margins
-- Interactive/foreground content inside the safe area; only background art uses `ignoresSafeArea()` / `view.bounds`.
-- Handle each edge independently: `view.bounds.inset(by: view.safeAreaInsets)`, never `width - left * 2`; no inset-threshold tests. `safeAreaInsets.left` is physical; use `safeAreaLayoutGuide.leading/trailingAnchor` when you mean a direction. Custom bar placement: `traitCollection.verticalBarEdge`, registering `systemTraitsAffectingVerticalBarEdge` outside layout methods. Check with Reduce Transparency on (opaque rectangle behind the vertical bar).
-- Outer display: content is offset from the vertical bar automatically when aligned to horizontal safe-area insets. Full-width centering is only for non-scrolling immersive UI whose interactive elements cannot land under the bar, Dynamic Island, or status bar. Mixed pattern: full-width background, inset scrollable foreground. → `references/design-principles.md` §3–4
+- Interactive and foreground content stays inside the safe area. Only background art uses `ignoresSafeArea()` / `view.bounds`.
+- Handle each edge on its own: `view.bounds.inset(by: view.safeAreaInsets)`. Never `width - left * 2`. No inset-threshold tests.
+- `safeAreaInsets.left` is physical. Use `safeAreaLayoutGuide.leadingAnchor` / `.trailingAnchor` when you mean a direction.
+- Custom bar placement reads `traitCollection.verticalBarEdge`. Outside layout methods, register `systemTraitsAffectingVerticalBarEdge`.
+- On the outer display, content aligned to horizontal safe-area insets is offset from the vertical bar automatically.
+- Full-width centering is only for non-scrolling immersive UI whose interactive elements cannot land under the bar, Dynamic Island, or status bar. Mixed pattern: full-width background, inset scrollable foreground.
+- Check with Reduce Transparency on (the system draws an opaque rectangle behind the vertical bar). → `references/design-principles.md` §3–4
 
 ### 5. Get the vertical bar right
-Apply `.toolbar` inside `NavigationStack`/`NavigationSplitView`; UIKit items on `navigationItem` inside `UINavigationController`. Then audit every item:
-- Title **and** symbol on every non-text item (`Label` / `UIBarButtonItem`). Prefer symbols; convert inline counts to `.badge()` / `item.badge = .count()`.
-- Symbol↔text togglers: `.axisBehavior(.horizontalOnly)`. Custom views that can go vertical: `.axisBehavior(.verticalPreferred)` and fit the fixed bar width; read `toolbarVerticalEdge` / `verticalBarEdge` to adapt.
-- Order: custom back/close via `.cancellationAction` (UIKit leading item, `leftItemsSupplementBackButton = false`); prominent action via `.topBarPinnedTrailing` / `pinnedTrailingGroup`; keep other groups as they were; group with `ToolbarItemGroup` / `UIBarButtonItemGroup`, no manual spacing.
-- Overflow: merge custom overflow into `ToolbarOverflowMenu` / `additionalOverflowItems`; ellipsis only for overflow; set `visibilityPriority` (groups first) so frequent and badged items overflow last (default order is bottom-to-top).
-- Compression: default keeps the tab bar (navigation-focused). Task-oriented views: `.toolbarVerticalCompressionBehavior(.prefersToolbarItems)` / `verticalBarCompressionBehavior = .prefersBarItems`.
-- Opt out (`.toolbarVerticalBehavior(.disabled)` / `preferredVerticalBarBehavior`) only for Apple's cases: fullscreen video player with toolbar controls, non-scrolling layouts like Calculator, or a sheet with a single control. Apple: "Treat it as a stable choice"; never toggle per view state. → `references/vertical-bars-and-toolbars.md`
+Apply `.toolbar` inside `NavigationStack` / `NavigationSplitView`; UIKit items on `navigationItem` inside `UINavigationController`. Then audit every item:
+- Every non-text item has a title and a symbol (`Label` / `UIBarButtonItem`). Prefer symbols.
+- Inline counts become badges: `.badge()` / `item.badge = .count()`.
+- Items that toggle between symbol and text: `.axisBehavior(.horizontalOnly)`.
+- Custom views that can go vertical: `.axisBehavior(.verticalPreferred)`, sized to the fixed bar width. Read `toolbarVerticalEdge` / `verticalBarEdge` to adapt.
+- Custom back/close: `.cancellationAction` (UIKit: leading item, `leftItemsSupplementBackButton = false`).
+- Prominent action: `.topBarPinnedTrailing` / `pinnedTrailingGroup`.
+- Group with `ToolbarItemGroup` / `UIBarButtonItemGroup`. No manual spacers.
+- Fold custom overflow into `ToolbarOverflowMenu` / `additionalOverflowItems`. Ellipsis only for overflow.
+- Set `visibilityPriority` (groups first) so frequent and badged items overflow last. Default order is bottom to top.
+- Compression: default keeps the tab bar. Task-oriented views: `.toolbarVerticalCompressionBehavior(.prefersToolbarItems)` / `verticalBarCompressionBehavior = .prefersBarItems`.
+- Opt out (`.toolbarVerticalBehavior(.disabled)` / `preferredVerticalBarBehavior`) only for Apple's cases: a fullscreen video player, a non-scrolling layout like Calculator, a sheet with a single control. "Treat it as a stable choice"; never toggle per view state. → `references/vertical-bars-and-toolbars.md`
 
 ### 6. Use the inner display's width
-Pick one of Apple's three options; keep the hierarchy identical to the outer display:
-1. Split view exposing one more level of hierarchy.
-2. Vertically stacked layout that becomes two columns in regular width (Music example).
-3. Tab bar as sidebar (information-dense apps only). → `references/design-principles.md` §5
-- When a second column appears on unfold, do not silently auto-select content with side effects (e.g. marking a conversation read); show a content-unavailable view until the user chooses. Keep text within readable-content width. → `references/group-lab-qa.md` Day 3
+Pick one of Apple's three options and keep the hierarchy identical to the outer display:
+1. A split view that exposes one more level of hierarchy.
+2. A stacked layout that becomes two columns in regular width (Music).
+3. The tab bar as a sidebar (information-dense apps only).
+
+When a second column appears on unfold, do not auto-select content with side effects (such as marking a conversation read). Show a content-unavailable view until the user picks. Keep text within readable-content width. → `references/design-principles.md` §5, `references/group-lab-day3.md`
 
 ### 7. Handle the fold (partially open inner display)
-- Audit centered layouts: convert to two columns or define a displacement rule. Move the minimum; move related elements together; scrolling content never displaces. Grids: even column count, extra spacing around the hinge, outer margins preserved. Flat vs folded: a 35/65 split view that becomes 50/50 when folded is Apple's default shape; avoid large transitions. Prefer scrolling perpendicular to the hinge; parallel scrolling is hard to reach at the crease. → `references/group-lab-qa.md` Day 3
-- Two-view layouts: `ArrangementView` (SwiftUI) / `UIArrangementViewController` (UIKit) inside the navigation container; never inside `NavigationSplitView`, `List`, `ScrollView` or any container that could make part of it inaccessible; never wrapping navigation containers.
-  - `HStack`/`VStack`-like, main–detail, nothing may be obscured → `.arrangementViewStyle(.split)`; restrict with `.split.axes(.horizontal)`; if the primary axis can't split, only the primary view shows.
-  - `ZStack`-like, foreground/background, partial obscuring acceptable → `.arrangementViewStyle(.overlay)`; read `overlayArrangementZIndex` (`> 0` = on top) to switch collapsed/expanded.
-- Custom manual layouts: query `proxy.reservedRegions(kind:options:layoutDirectionBehavior:)` (SwiftUI) / `view.reservedRegions(kind:options:)` (UIKit); use `frame` (includes `margins`) and `isActive`; `.includeInactive` to plan (e.g. even columns) while flat; `kind: .occlusion` for the camera; frames are RTL-mirrored by default, pass `.fixed` for hardware coordinates. → `references/arrangement-views-and-reserved-regions.md`
+- Audit centered layouts: convert to two columns or define a displacement rule.
+- Move the minimum. Move related elements together. Scrolling content never displaces.
+- Grids: even column count, extra spacing around the hinge, outer margins preserved.
+- Flat vs folded: Apple's default shape is a 35/65 split that becomes 50/50 when folded. Avoid large transitions.
+- Prefer scrolling perpendicular to the hinge; parallel scrolling is hard to reach at the crease. → `references/group-lab-day3.md`
+- Two-view layouts: `ArrangementView` / `UIArrangementViewController` inside the navigation container. Never inside `NavigationSplitView`, `List`, `ScrollView` or any container that could hide part of it. Never wrapping navigation containers.
+  - Side by side, nothing may be obscured: `.arrangementViewStyle(.split)`; restrict with `.split.axes(.horizontal)`. If the primary axis cannot split, only the primary view shows.
+  - Layered, partial obscuring acceptable: `.arrangementViewStyle(.overlay)`; read `overlayArrangementZIndex` (`> 0` means on top).
+- Custom manual layouts: `proxy.reservedRegions(kind:options:layoutDirectionBehavior:)` / `view.reservedRegions(kind:options:)`. Use `frame` (includes `margins`) and `isActive`. `.includeInactive` plans while flat. `kind: .occlusion` for the camera. Frames are RTL-mirrored by default; pass `.fixed` for hardware coordinates. → `references/arrangement-views-and-reserved-regions.md`
 
 ### 8. Hinge, scenes, multitasking
-- Hinge angle/status (`onHingeChange(isEnabled:_:)` → `DeviceHingeContext.hinge: DeviceHinge?` in SwiftUI, SDK-declared, no DocC page; `UIHingeInteraction` + `UIHinge` in UIKit, documented) drives effects only, never layout; handle a nil hinge; prefer `status` over `angle` (`Angle` in SwiftUI, radians in UIKit). Apple's layering advice: system components → `ArrangementView` → reserved regions → raw angle; pick the highest layer that fits.
-- All apps get Split View and pinned-PiP resizing; multi-scene apps must handle scene-request failure (new windows only on the inner display) and use `UIWindowScene.ActivationAction`.
-- Camera apps: consider `CameraCaptureAccessory` for outer-display companion UI; use the virtual front camera or a direction coordinator. → `references/hinge-multitasking-scenes.md`
+- Hinge drives effects only, never layout. SwiftUI: `onHingeChange(isEnabled:_:)` → `DeviceHingeContext.hinge: DeviceHinge?` (SDK-declared, no DocC page). UIKit: `UIHingeInteraction` + `UIHinge` (documented). Handle a nil hinge. Prefer `status` over `angle` (`Angle` in SwiftUI, radians in UIKit).
+- Apple's layering: system components, then `ArrangementView`, then reserved regions, then raw angle. Pick the highest layer that fits.
+- All apps get Split View and pinned-PiP resizing. Multi-scene apps handle scene-request failure (new windows only on the inner display) and use `UIWindowScene.ActivationAction`.
+- Camera apps: `CameraCaptureAccessory` for outer-display companion UI (needs an active capture session); virtual front camera or a direction coordinator. → `references/hinge-multitasking-scenes.md`
 
 ### 9. Games
-Fill the screen in every pose even when orientation-locked; change aspect ratio rather than letterbox; fill unavoidable padding with artwork; keep text and control sizes consistent. Nothing more is documented.
+Fill the screen in every pose even when orientation-locked. Change aspect ratio rather than letterbox. Fill unavoidable padding with artwork. Keep text and control sizes consistent. Nothing more is documented.
 
 ### 10. Verify and ship
-Run `references/audit-checklist.md` against the result. Report each failing item with file and view. Name any symbol you used that has no DocC page (🧩 rows in `references/api-index.md`). If the app ships to the App Store: iPhone Duo screenshots (1398 × 2034 outer, 2007 × 2853 inner, both orientations) earn the "optimized for iPhone Duo" badge and become mandatory in April 2027; preview assets in App Store Connect; consider a featuring nomination. → `references/apple-get-ready-prepare.md`
+Run `references/audit-checklist.md`. Report each failing item with file and view. Name any 🧩 symbol you used. For App Store builds: iPhone Duo screenshots (1398 × 2034 outer, 2007 × 2853 inner, both orientations) earn the "optimized for iPhone Duo" badge and, per Apple's October 2026 statement, become required in April 2027. → `references/apple-get-ready-prepare.md`
 
-## Anti-patterns (each contradicts an Apple statement)
+## Anti-patterns
 
-- `UIScreen.main` anywhere (including `UIWindow(frame: UIScreen.main.bounds)` and a stored `UIScreen`); screen-size constants such as `bounds.height == 844`; fixed widths or breakpoints; size read once at launch or in `viewIsAppearing`.
-- Layout branches on `userInterfaceIdiom`, `UIDevice.current.orientation`, `statusBarOrientation`, `interfaceOrientation` / `effectiveGeometry.interfaceOrientation`, or device model; treating `horizontalSizeClass == .regular` as "iPad".
-- `UITabBar` / `UIToolbar` inserted as a subview expecting it to move into the vertical bar (only `UITabBarController` / `TabView` and `UINavigationController` / `NavigationStack` items do).
-- `.scaleAspectFill` hero media left unchecked on the wider display.
-- `safeAreaInsets.left * 2` or any symmetric-inset assumption.
-- Custom `UIToolbar` / `UINavigationBar` / `UITabBar` as primary bars; manual toolbar spacers.
-- Toolbar items with a symbol but no title; text-only items where a symbol works; cart-style items with meaningful text forced vertical.
-- Overriding vertical bar placement outside Apple's two exceptions.
-- A per-pose custom layout that changes functionality or hierarchy.
-- Navigation containers inside `ArrangementView`; `ArrangementView` inside `List`/`ScrollView`.
-- Using hinge angle to lay out views.
-- Displacing scrolling feeds/articles when folded; large rearrangements on fold.
-- Stating point sizes, scale factor, bar widths, or hinge thresholds for iPhone Duo; quoting an inner-display pixel count without its source.
-- Promising an opt-out from resizability on the iOS 27 SDK, or Duo-specific web/React Native/Flutter guidance.
+Each line contradicts an Apple statement. Grep for them.
+
+- `UIScreen.main`, `UIWindow(frame: UIScreen.main.bounds)`, a stored `UIScreen`
+- `bounds.height == 844` or any screen-size constant, fixed width, or breakpoint
+- Size read once at launch or in `viewIsAppearing`
+- `userInterfaceIdiom == .pad` / `.phone` deciding layout
+- `UIDevice.current.orientation`, `statusBarOrientation`, `interfaceOrientation`, `effectiveGeometry.interfaceOrientation` deciding layout
+- `horizontalSizeClass == .regular` treated as "iPad"
+- `safeAreaInsets.left * 2` or any symmetric-inset assumption; inset-threshold tests
+- `UITabBar` / `UIToolbar` / `UINavigationBar` as primary bars; manual toolbar spacers
+- Toolbar item with a symbol but no title; text-only item where a symbol works; text item forced vertical
+- Vertical bar disabled outside Apple's listed cases
+- Navigation containers inside `ArrangementView`; `ArrangementView` inside `List` / `ScrollView`
+- Hinge angle used for layout
+- Scrolling feeds displaced on fold; large rearrangements on fold
+- A per-pose layout that changes functionality or hierarchy
+- `.scaleAspectFill` hero media unchecked on the wider display
+- Point sizes, scale factor, bar width, hinge thresholds, or an unsourced inner-display pixel count stated as fact
+- A promised opt-out from resizability on the iOS 27 SDK; Duo guidance for web, React Native, or Flutter
 
 ## Minimal code map
 
+Each snippet carries one tag: **verbatim** (Apple's code as published), **composed** (assembled from Apple's samples, not itself a sample), **SDK-only** (compiles against the released SDK; no DocC page).
+
 ```swift
-// Size classes (SwiftUI / UIKit)
+// [verbatim] Size classes — TT-PREPARE
 @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 traitCollection.horizontalSizeClass
 
-// Edge-independent safe area (UIKit)
+// [verbatim] Edge-independent safe area — TT-PREPARE
 let content = view.bounds.inset(by: view.safeAreaInsets)
 
-// Vertical-bar-ready toolbar item (SwiftUI) — composed from Apple's TT-BARS samples, not a verbatim sample
+// [composed] Vertical-bar-ready toolbar — from TT-BARS samples
 .toolbar {
     ToolbarItem { Button { … } label: { Label("Compose", systemImage: "square.and.pencil") } }
         .visibilityPriority(.high)
     ToolbarOverflowMenu { Button("Scan") { … } }
 }
 
-// Two-view fold-aware layout (SwiftUI, iOS 27.1)
+// [composed] Two-view fold-aware layout — from TT-POSE samples
 NavigationStack {
     ArrangementView { PlayerView() } secondary: { UpNextView() }
         .arrangementViewStyle(.split.axes(.horizontal))
 }
 
-// Hinge (SwiftUI, iOS 27.1) — declared in SwiftUICore, no DocC page yet
+// [SDK-only] Hinge status — TT-SCENES shape, names from SwiftUICore.swiftinterface
 .onHingeChange { _, context in
     if let hinge = context.hinge, hinge.status == .partiallyOpen { /* effect only, never layout */ }
 }
 
-// Custom displacement (SwiftUI, iOS 27.1) — DocC sample
+// [verbatim] Custom displacement — DocC sample
 GeometryReader { proxy in
     RegionAvoidingLayout(regions: proxy.reservedRegions(kind: .occlusion)) {
         ForEach(items) { item in ItemView(item) }
@@ -146,22 +172,21 @@ GeometryReader { proxy in
 }
 ```
 
-Full, verbatim Apple samples with timestamps are in the reference files.
 
 ## References
 
 | File | Use it for |
 |------|-----------|
 | `references/hig-designing-for-iphone-duo.md` | Apple's HIG page, full text. Quote from here. |
-| `references/apple-preparing-your-app-for-iphone-duo.md` | Apple's developer article, full text (published Sept 2026). Quote from here. |
-| `references/device-facts.md` | Anatomy, size-class table, SDK gating, orientation quotes, apple.com specs, **NOT documented** list. |
-| `references/design-principles.md` | Displacement, consistency, outer/inner display patterns, sheets, games. |
-| `references/vertical-bars-and-toolbars.md` | Everything about side bars, item axis, overflow, priority, opt-out, with code. |
+| `references/apple-preparing-your-app-for-iphone-duo.md` | Apple's developer article, full text. Quote from here. |
+| `references/apple-get-ready-prepare.md` | Apple's "Three steps" page (full text), October 2026 news, App Store screenshot and preview specs, hub inventory. |
+| `references/apple-app-resizability-skill.md` | How to export and run Apple's Xcode 27.1 `app-resizability` skill; its prerequisites and key rules, quoted. |
+| `references/device-facts.md` | Anatomy, size-class table, SDK behavior, orientation quotes, apple.com specs, NOT-documented list. |
+| `references/design-principles.md` | Displacement, consistency, outer and inner display patterns, sheets, games. |
+| `references/vertical-bars-and-toolbars.md` | Side bars, item axis, overflow, priority, opt-out, with code. |
 | `references/arrangement-views-and-reserved-regions.md` | `ArrangementView`, split vs overlay, reserved-region queries, split views, with code. |
 | `references/hinge-multitasking-scenes.md` | Hinge API, Split View, scenes, scene accessories, camera direction. |
-| `references/apple-get-ready-prepare.md` | Apple's "Three steps to make your app shine on iPhone Duo" (full text), Oct 5 news, App Store screenshot/preview specs, hub inventory. |
-| `references/apple-app-resizability-skill.md` | How to export and run Apple's own Xcode 27.1 `app-resizability` skill; its prerequisites and key rules, quoted. |
-| `references/group-lab-qa.md` | Apple panel answers from the Group Labs (spoken; hedges marked). First-party app examples, orientation reconciliation, custom tab bars, accessibility. |
-| `references/api-index.md` | Every symbol with source, timestamp, DocC status (✅ / 🧩 SDK-verified / ❌) and confirmed signature (2026-10-26). |
+| `references/group-lab-day1.md`, `-day2.md`, `-day3.md` | Apple panel Q&A, one file per Group Lab, question list at the top; hedges marked. Day 1: orientation, custom tab bars, accessibility. Day 2: state, sheets, compression, idiom. Day 3: fold avoidance, scroll direction, tab bar vs sidebar, lifecycle. |
+| `references/api-index.md` | Every symbol with source, DocC status (✅ / 🧩 / ❌) and confirmed signature. |
 | `references/audit-checklist.md` | Pass/fail review list. |
-| `references/sources.md` | All URLs, fetch date, 404 list. |
+| `references/sources.md` | All URLs, fetch dates, blocked and missing pages. |

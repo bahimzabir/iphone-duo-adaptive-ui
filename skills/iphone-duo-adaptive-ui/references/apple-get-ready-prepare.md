@@ -4,7 +4,7 @@ Source IDs: **DUO-HUB** (https://developer.apple.com/iphone-duo/), **DUO-PREPARE
 
 ## 1. What the hub page lists (DUO-HUB, 2026-10-26)
 
-- Videos: the six Tech Talks (`sources.md` TT-*), plus **iPhone Duo Group Lab | Day 1 / Day 2 / Day 3** (Meet with Apple 285, 286, 287 — see `group-lab-qa.md`).
+- Videos: the six Tech Talks (`sources.md` TT-*), plus **iPhone Duo Group Lab | Day 1 / Day 2 / Day 3** (Meet with Apple 285, 286, 287 — see `group-lab-day1.md`, `-day2.md`, `-day3.md`).
 - "iPhone Duo Workshops — Join us around the world for workshops to optimize your apps and explore resizability for all screen sizes."
 - "iPhone Duo Q&As — Browse questions and answers from the iPhone Duo Q&As on the Apple Developer Forums." Links: Photos & Camera Q&A, SwiftUI Q&A, UIKit Q&A (forum activities 1659080, 1664080, 1670080) and "Group Lab highlights" (forum thread 847644). *[note: the forums sit behind a human-verification page and could not be fetched; see `sources.md`.]*
 - Tools and documentation: "Xcode 27.1 — Get the latest SDKs to build, run, and test your app for iPhone Duo." (no longer "beta"), HIG "Designing for iPhone Duo", Apple Design Resources, "Preparing your app for iPhone Duo", "Three steps to make your app shine on iPhone Duo".

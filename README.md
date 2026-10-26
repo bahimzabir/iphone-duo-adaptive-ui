@@ -4,26 +4,38 @@ A skill for AI coding agents (Claude Code, Codex, Cursor, Copilot and others) th
 
 Everything in it comes from Apple's own material: the Human Interface Guidelines, Apple's developer articles, the iOS 27.1 SDK and API reference, the six iPhone Duo Tech Talks and the three Group Lab Q&A sessions. Where Apple has not published something, the skill says so and tells the agent to ask you instead of guessing.
 
-Current version: **0.3.0** (October 26, 2026). iPhone Duo has been on sale since October 23, 2026, running iOS 27.1.
+Current version: **0.3.1** (October 26, 2026). iPhone Duo has been on sale since October 23, 2026, running iOS 27.1.
 
 ## Install
 
 Pick the one that matches your setup.
 
-**Any agent** (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Windsurf, Cline and more). Uses the [`skills`](https://github.com/vercel-labs/skills) CLI:
-
-```bash
-npx skills add bahimzabir/iphone-duo-adaptive-ui
-```
-
-Add `--list` to see what you get first, or `-g -a claude-code -y` to install globally for Claude Code without prompts.
-
-**Claude Code plugin:**
+**Claude Code.** Either install it as a plugin from inside Claude Code:
 
 ```
 /plugin marketplace add bahimzabir/iphone-duo-adaptive-ui
 /plugin install iphone-duo-adaptive-ui@ios-skills
 ```
+
+or copy it into your global skills folder from a terminal. Name the agent explicitly; without `-a claude-code` the CLI may only write to `.agents/skills/`, which Claude Code does not read:
+
+```bash
+npx skills add bahimzabir/iphone-duo-adaptive-ui -a claude-code -g -y
+```
+
+Check: start a new Claude Code session and type `/iphone-duo-adaptive-ui`, or run `ls ~/.claude/skills`. If an earlier install left the skill only in `.agents/skills/`, link it:
+
+```bash
+ln -s "$PWD/.agents/skills/iphone-duo-adaptive-ui" ~/.claude/skills/iphone-duo-adaptive-ui
+```
+
+**Other agents** (Codex, Cursor, Copilot, Gemini CLI, Windsurf, Cline and more), with the [`skills`](https://github.com/vercel-labs/skills) CLI:
+
+```bash
+npx skills add bahimzabir/iphone-duo-adaptive-ui
+```
+
+The CLI asks which agents to install for. Add `--list` to see what you get first.
 
 **By hand**, for any agent that reads `SKILL.md` folders:
 
@@ -96,7 +108,7 @@ skills/iphone-duo-adaptive-ui/
     vertical-bars-and-toolbars.md             side bars and toolbar items, with code
     arrangement-views-and-reserved-regions.md ArrangementView, reserved regions, with code
     hinge-multitasking-scenes.md              hinge, Split View, scenes, camera
-    group-lab-qa.md                           Apple panel Q&A from the three Group Labs
+    group-lab-day1.md, -day2.md, -day3.md     Apple panel Q&A, one file per Group Lab
     api-index.md                              every symbol, its source and documentation status
     audit-checklist.md                        review checklist
     sources.md                                URLs and fetch dates
@@ -104,6 +116,8 @@ skills/iphone-duo-adaptive-ui/
 ```
 
 ## Changelog
+
+**0.3.1** (2026-10-26). Shorter SKILL.md, Group Lab Q&A split into one file per day with a table of contents, a rule for re-checking dated claims, clearer Claude Code install steps.
 
 **0.3.0** (2026-10-26). iOS 27.1 and Xcode 27.1 are released; beta wording removed. Added Apple's "Three steps" page, the October 5 news, App Store asset specs, all three Group Lab transcripts and a guide to Apple's `app-resizability` skill. Symbols without a documentation page verified against the SDK.
 
@@ -119,7 +133,7 @@ Re-check when any of these happen:
 - The HIG page gets a new change-log entry. Re-fetch it and regenerate `references/hig-designing-for-iphone-duo.md`.
 - A symbol marked "SDK-verified, no documentation page" in `references/api-index.md` gets a page. Flip its status and link it.
 - Apple publishes point dimensions or a scale factor, or reconciles its two pixel figures. Move them out of the "not documented" list in `references/device-facts.md`.
-- The Developer Forums Q&A threads become readable. Add them to `references/group-lab-qa.md`.
+- The Developer Forums Q&A threads become readable. Add them to a new `references/` file next to the Group Lab files.
 
 Issues and pull requests welcome.
 

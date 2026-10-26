@@ -36,13 +36,13 @@ Landing page listing all six plus events: **Get Ready for iPhone Duo** — https
 
 ## Primary (developer guidance — Apple Group Labs, Meet with Apple, September 2026)
 
-Live Q&A panels of Apple engineers and designers. Days 1 and 2 were recorded the week after the Tech Talks (mid-September 2026, before Xcode 27.1 shipped); Day 3 opens with "Just ten days until iPhone Duo is in people's hands", so about October 13, 2026, after Xcode 27.1 was out. Read from the English subtitle tracks on 2026-10-26; transcribed Q&A in `group-lab-qa.md`. Spoken, sometimes hedged — the file marks hedges and defers to written sources where they exist.
+Live Q&A panels of Apple engineers and designers. Days 1 and 2 were recorded the week after the Tech Talks (mid-September 2026, before Xcode 27.1 shipped); Day 3 opens with "Just ten days until iPhone Duo is in people's hands", so about October 13, 2026, after Xcode 27.1 was out. Read from the English subtitle tracks on 2026-10-26; transcribed Q&A in `group-lab-day1.md`, `group-lab-day2.md`, `group-lab-day3.md` (one file per session, question list at the top). Spoken, sometimes hedged — the files mark hedges and defer to written sources where they exist.
 
 | ID | Title | URL | Status |
 |----|-------|-----|--------|
-| LAB-1 | iPhone Duo Group Lab — Day 1 | https://developer.apple.com/videos/play/meet-with-apple/285/ | Transcribed in full. |
-| LAB-2 | iPhone Duo Group Lab — Day 2 | https://developer.apple.com/videos/play/meet-with-apple/286/ | Transcribed in full. |
-| LAB-3 | iPhone Duo Group Lab — Day 3 | https://developer.apple.com/videos/play/meet-with-apple/287/ | Transcribed in full. |
+| LAB-1 | iPhone Duo Group Lab — Day 1 | https://developer.apple.com/videos/play/meet-with-apple/285/ | Transcribed in full → `group-lab-day1.md`. |
+| LAB-2 | iPhone Duo Group Lab — Day 2 | https://developer.apple.com/videos/play/meet-with-apple/286/ | Transcribed in full → `group-lab-day2.md`. |
+| LAB-3 | iPhone Duo Group Lab — Day 3 | https://developer.apple.com/videos/play/meet-with-apple/287/ | Transcribed in full → `group-lab-day3.md`. |
 
 ## Primary (Apple's own agent skill, shipped in Xcode 27.1)
 
